@@ -28,3 +28,12 @@ const co=new IntersectionObserver(es=>es.forEach(e=>{if(!e.isIntersecting)return
 document.querySelectorAll('[data-to]').forEach(el=>co.observe(el));
 const fb=document.querySelectorAll('.filters button');
 fb.forEach(b=>b.onclick=()=>{fb.forEach(x=>x.classList.remove('on'));b.classList.add('on');document.querySelectorAll('[data-cat]').forEach(c=>c.style.display=(b.dataset.f==='all'||c.dataset.cat===b.dataset.f)?'':'none')});
+
+/* pasek postępu, przycisk w górę, spis treści artykułu */
+const pr=document.createElement('div');pr.id='prog';document.body.prepend(pr);
+const tt=document.createElement('button');tt.id='totop';tt.setAttribute('aria-label','Do góry');tt.textContent='↑';tt.onclick=()=>scrollTo({top:0,behavior:'smooth'});document.body.appendChild(tt);
+addEventListener('scroll',()=>{pr.style.width=(scrollY/Math.max(1,document.documentElement.scrollHeight-innerHeight)*100)+'%';tt.classList.toggle('show',scrollY>700)});
+addEventListener('DOMContentLoaded',()=>{const b=document.getElementById('body');if(!b)return;const hs=[...b.querySelectorAll('h3')];if(hs.length<3)return;
+ hs.forEach((h,i)=>h.id='s'+(i+1));const first=b.querySelector('p');
+ first.insertAdjacentHTML('afterend','<nav class="toc"><b>W tym tekście</b><ol>'+hs.map(h=>`<li><a href="#${h.id}">${h.textContent}</a></li>`).join('')+'</ol></nav>');
+});
