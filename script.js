@@ -1,3 +1,6 @@
+/* PRZERWA TECHNICZNA: true = wszystkie strony pokazują przerwa.html; false = strona działa normalnie */
+const MAINTENANCE=true;
+if(MAINTENANCE&&!/przerwa\.html$/.test(location.pathname)){document.documentElement.style.visibility='hidden';location.replace('przerwa.html');}
 const PAGES=[['index.html','Start'],['o-mnie.html','O mnie'],['program.html','Program'],['artykuly.html','Artykuły'],['aktualnosci.html','Aktualności'],['kontakt.html','Kontakt']];
 let cur=location.pathname.split('/').pop()||'index.html';if(cur==='artykul.html')cur='artykuly.html';
 /* SPOTKANIA: edytuj tylko tę listę. Minione terminy znikają same. [data RRRR-MM-DD, godzina, miejsce, temat] */
