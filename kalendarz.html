@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<title>Kartka z kalendarza PRO</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: radial-gradient(circle at 30% 20%, #3a3f55, #14161f);
+    font-family: Georgia, serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 40px;
+  }
+  .swiat { perspective: 1200px; }
+
+  .scena {
+    position: relative;
+    width: 300px;
+    height: 420px;
+    transform-style: preserve-3d;
+    transition: transform 0.15s ease-out;
+  }
+
+  /* spirala u góry */
+  .spirala {
+    position: absolute;
+    top: -14px; left: 0; right: 0;
+    display: flex;
+    justify-content: space-around;
+    padding: 0 20px;
+    z-index: 10;
+  }
+  .spirala span {
+    width: 14px; height: 30px;
+    border-radius: 8px;
+    background: linear-gradient(90deg, #888, #eee, #777);
+    box-shadow: 0 3px 5px rgba(0,0,0,0.5);
+  }
+
+  .kartka {
+    position: absolute;
+    inset: 0;
+    background: #fdfbf5;
+    border-radius: 6px 6px 12px 12px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+    text-align: center;
+    overflow: hidden;
+    transform-origin: top center;
+    --kolor: #c0392b;
+  }
+  /* perforacja pod spiralą */
+  .kartka::before {
+    content: "";
+    position: absolute;
+    top: 26px; left: 10px; right: 10px;
+    border-top: 3px dotted #bbb;
+  }
+  /* delikatny połysk papieru */
+  .kartka::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(120deg, rgba(255,255,255,0.5), transparent 40%, rgba(0,0,0,0.06));
+    pointer-events: none;
+  }
+
+  .gora {
+    background: var(--kolor);
+    color: white;
+    padding: 40px 10px 12px;
+    font-size: 26px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    font-weight: bold;
+  }
+  .dzien {
+    font-size: 150px;
+    font-weight: bold;
+    line-height: 1;
+    margin-top: 18px;
+    color: #222;
+    text-shadow: 3px 3px 0 rgba(0,0,0,0.12);
+  }
+  .dzien-tygodnia {
+    font-size: 28px;
+    color: var(--kolor);
+    text-transform: capitalize;
+    margin-top: 4px;
+  }
+  .rok { font-size: 18px; color: #999; letter-spacing: 6px; }
+  .czas {
+    margin: 14px 20px 0;
+    padding: 8px;
+    border-radius: 8px;
+    background: #1b1b1b;
+    color: #7CFC00;
+    font-family: "Courier New", monospace;
+    font-size: 30px;
+    text-shadow: 0 0 8px #7CFC00;
+  }
+
+  /* animacja odrywania */
+  .odrywanie {
+    animation: oderwij 1s ease-in forwards;
+  }
+  @keyframes oderwij {
+    0%   { transform: rotateX(0); }
+    35%  { transform: rotateX(-35deg) rotateZ(-3deg); }
+    100% { transform: translate(120px, 700px) rotateX(-80deg) rotateZ(35deg); opacity: 0; }
+  }
+
+  button {
+    padding: 14px 32px;
+    font-size: 18px;
+    font-weight: bold;
+    border: none;
+    border-radius: 30px;
+    background: linear-gradient(135deg, #ff7a18, #af002d);
+    color: white;
+    cursor: pointer;
+    box-shadow: 0 8px 20px rgba(255,80,40,0.4);
+    transition: transform 0.15s;
+  }
+  button:hover  { transform: scale(1.08); }
+  button:active { transform: scale(0.95); }
+</style>
+</head>
+<body>
+
+<div class="swiat">
+  <div class="scena" id="scena">
+    <div class="spirala" id="spirala"></div>
+    <div class="kartka" id="tyl"></div>
+    <div class="kartka" id="przod"></div>
+  </div>
+</div>
+
+<button id="przycisk">✂ Oderwij kartkę</button>
+
+<script>
+  var miesiace = ["styczeń","luty","marzec","kwiecień","maj","czerwiec",
+                  "lipiec","sierpień","wrzesień","październik","listopad","grudzień"];
+  var dni = ["niedziela","poniedziałek","wtorek","środa","czwartek","piątek","sobota"];
+
+  function dwie(n) { return String(n).padStart(2, "0"); }
+
+  // budowa spirali
+  var spirala = document.getElementById("spirala");
+  for (var i = 0; i < 9; i++) spirala.appendChild(document.createElement("span"));
+
+  var przod = document.getElementById("przod");
+  var tyl   = document.getElementById("tyl");
+  var scena = document.getElementById("scena");
+
+  // wypełnia kartkę danymi z podanej daty
+  function wypelnij(kartka, d, zCzasem) {
+    var kolor = d.getDay() === 0
+      ? "#d00000"                                   // niedziela = na czerwono
+      : "hsl(" + (d.getMonth() * 30) + ", 65%, 42%)"; // kolor zależy od miesiąca
+    kartka.style.setProperty("--kolor", kolor);
+    kartka.innerHTML =
+      '<div class="gora">' + miesiace[d.getMonth()] + '</div>' +
+      '<div class="dzien">' + d.getDate() + '</div>' +
+      '<div class="dzien-tygodnia">' + dni[d.getDay()] + '</div>' +
+      '<div class="rok">' + d.getFullYear() + '</div>' +
+      (zCzasem ? '<div class="czas" id="czas"></div>' : '');
+  }
+
+  function dzis()  { return new Date(); }
+  function jutro() { var d = new Date(); d.setDate(d.getDate() + 1); return d; }
+
+  function odswiezZegar() {
+    var d = dzis();
+    var el = document.getElementById("czas");
+    if (el) el.textContent = dwie(d.getHours()) + ":" + dwie(d.getMinutes()) + ":" + dwie(d.getSeconds());
+  }
+
+  function ustaw() {
+    wypelnij(przod, dzis(), true);
+    wypelnij(tyl, jutro(), false);
+    odswiezZegar();
+  }
+
+  ustaw();
+  setInterval(odswiezZegar, 1000);
+
+  // odrywanie kartki
+  document.getElementById("przycisk").onclick = function () {
+    if (przod.classList.contains("odrywanie")) return;
+    przod.classList.add("odrywanie");
+    setTimeout(function () {
+      przod.classList.remove("odrywanie");
+      ustaw(); // nowa kartka wskakuje na miejsce
+    }, 1100);
+  };
+
+  // przechylanie 3D za myszką
+  document.addEventListener("mousemove", function (e) {
+    var x = (e.clientX / window.innerWidth - 0.5) * 30;
+    var y = (e.clientY / window.innerHeight - 0.5) * -30;
+    scena.style.transform = "rotateY(" + x + "deg) rotateX(" + y + "deg)";
+  });
+</script>
+
+</body>
+</html>
