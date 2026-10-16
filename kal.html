@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kalendarz zdzierak</title>
+<style>
+:root{
+  --sciana:#cdbfa6; --sciana2:#e3d8c3; --txt:#2b241a; --przycisk:#2b241a; --przycisk-txt:#f4ecdc;
+  --tablica:#8a6b45; --zegar-tlo:#1c1a16; --zegar:#ffb347;
+  box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --sciana:#23201b; --sciana2:#38322a; --txt:#efe6d4; --przycisk:#efe6d4; --przycisk-txt:#23201b;
+    --tablica:#5b452c;
+  }
+}
+:root[data-theme="dark"]{
+  --sciana:#23201b; --sciana2:#38322a; --txt:#efe6d4; --przycisk:#efe6d4; --przycisk-txt:#23201b; --tablica:#5b452c;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0; color:var(--txt);
+  background:radial-gradient(ellipse at 50% 30%, var(--sciana2), var(--sciana) 70%);
+  font-family:Georgia,"Times New Roman",serif;
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:34px;
+  overflow-x:hidden; padding:24px 12px;
+}
+.scena{
+  position:relative; width:min(330px,84vw); aspect-ratio:330/450;
+  container-type:inline-size; transition:transform .12s ease-out;
+}
+.tablica{
+  position:absolute; inset:-4cqw -5cqw -9cqw; background:var(--tablica); border-radius:3cqw;
+  box-shadow:0 3cqw 8cqw rgba(0,0,0,.45), inset 0 0 0 .6cqw rgba(255,255,255,.12);
+}
+.warstwa,.kartka{position:absolute; inset:0; border-radius:1.5cqw 1.5cqw 3cqw 3cqw}
+.warstwa{background:#ece5d2; box-shadow:0 .4cqw .8cqw rgba(0,0,0,.35)}
+.warstwa:nth-of-type(1){transform:translateY(3.6cqw)}
+.warstwa:nth-of-type(2){transform:translateY(2.4cqw)}
+.warstwa:nth-of-type(3){transform:translateY(1.2cqw)}
+.kartka{
+  --kolor:#c1121f; background:#fbf8ef; text-align:center; overflow:hidden; color:#231f1a;
+  transform-origin:50% 0; cursor:pointer; z-index:3; user-select:none; -webkit-user-select:none;
+  box-shadow:0 .5cqw 1cqw rgba(0,0,0,.25);
+}
+.kartka.pod{z-index:2; cursor:default}
+.kartka.leci{z-index:6; pointer-events:none; box-shadow:0 4cqw 7cqw rgba(0,0,0,.5)}
+.kartka::before{content:""; position:absolute; top:7cqw; left:4cqw; right:4cqw; border-top:.9cqw dotted #b9b19c}
+.kartka::after{content:""; position:absolute; inset:0; pointer-events:none;
+  background:linear-gradient(115deg, rgba(255,255,255,.55), transparent 38%, rgba(60,40,10,.07))}
+.gora{background:var(--kolor); color:#fff; padding:11cqw 3cqw 3.2cqw; font-size:8cqw; letter-spacing:.8cqw; font-weight:bold; text-transform:uppercase}
+.dzien{font-size:50cqw; font-weight:bold; line-height:1; margin-top:2.5cqw; color:var(--kolor); text-shadow:.9cqw .9cqw 0 rgba(0,0,0,.1)}
+.dt{font-size:9cqw; text-transform:capitalize; margin-top:.5cqw; font-style:italic}
+.sw{font-size:4.4cqw; min-height:6cqw; color:var(--kolor); font-weight:bold; margin-top:1cqw}
+.info{display:flex; justify-content:space-around; margin:3cqw 6cqw 0; padding:2.4cqw 0; font-size:4.2cqw; border-top:.3cqw solid #d6cfba; border-bottom:.3cqw solid #d6cfba; color:#6a604d}
+.cyt{font-size:5cqw; font-style:italic; padding:4cqw 9cqw 0; line-height:1.35; min-height:17cqw}
+.rok{position:absolute; bottom:3cqw; left:0; right:0; font-size:4cqw; letter-spacing:1.5cqw; color:#9a917b}
+.spirala{position:absolute; top:-3.6cqw; left:0; right:0; display:flex; justify-content:space-around; padding:0 7cqw; z-index:10; pointer-events:none}
+.spirala span{width:4.2cqw; height:9cqw; border-radius:3cqw; background:linear-gradient(90deg,#777,#f2f2f2 45%,#666); box-shadow:0 1cqw 1.4cqw rgba(0,0,0,.55)}
+.panel{display:flex; flex-wrap:wrap; gap:10px; justify-content:center; align-items:center}
+button{
+  font:inherit; font-size:16px; font-weight:bold; border:0; border-radius:30px; padding:12px 22px; cursor:pointer;
+  background:var(--przycisk); color:var(--przycisk-txt); box-shadow:0 5px 14px rgba(0,0,0,.3); transition:transform .12s;
+}
+button:hover{transform:translateY(-2px)} button:active{transform:scale(.95)}
+button:focus-visible,.kartka:focus-visible{outline:3px solid #2f7fff; outline-offset:3px}
+.zegar{font-family:"Courier New",monospace; font-size:26px; padding:8px 18px; border-radius:10px; background:var(--zegar-tlo); color:var(--zegar); text-shadow:0 0 10px var(--zegar); min-width:150px; text-align:center}
+.podp{font-size:14px; opacity:.75; text-align:center; max-width:340px}
+@media (prefers-reduced-motion: reduce){.scena{transition:none}}
+</style>
+</head>
+<body>
+
+<div class="scena" id="scena">
+  <div class="tablica"></div>
+  <div class="warstwa"></div><div class="warstwa"></div><div class="warstwa"></div>
+  <div class="spirala" id="spirala"></div>
+  <div class="kartka pod" id="pod"></div>
+  <div class="kartka" id="gora" tabindex="0" role="button" aria-label="Oderwij kartkę"></div>
+</div>
+
+<div class="panel">
+  <button id="wstecz">↶ Przywróć</button>
+  <button id="dalej">✂ Oderwij kartkę</button>
+  <button id="dzis">Dziś</button>
+  <button id="dzwiek" aria-pressed="true">🔊</button>
+</div>
+<div class="zegar" id="zegar" aria-live="off">00:00:00</div>
+<div class="podp">Kliknij kartkę, naciśnij spację lub → żeby oderwać, ← żeby przywrócić.</div>
+
+<script>
+const M=["styczeń","luty","marzec","kwiecień","maj","czerwiec","lipiec","sierpień","wrzesień","październik","listopad","grudzień"];
+const D=["niedziela","poniedziałek","wtorek","środa","czwartek","piątek","sobota"];
+const C=["Bez pracy nie ma kołaczy.","Co nagle, to po diable.","Lepiej późno niż wcale.","Nie odkładaj na jutro, co możesz zrobić dziś.","Kto rano wstaje, temu Pan Bóg daje.","Trening czyni mistrza.","Wszystko ma swój czas.","Kropla drąży skałę.","Apetyt rośnie w miarę jedzenia.","Mądry Polak po szkodzie.","Dzieło chwali mistrza.","Cierpliwość jest cnotą."];
+const dwie=n=>String(n).padStart(2,"0");
+const dodaj=(d,n)=>{const x=new Date(d);x.setDate(x.getDate()+n);return x};
+const doby=(a,b)=>Math.round((new Date(a.getFullYear(),a.getMonth(),a.getDate())-new Date(b.getFullYear(),b.getMonth(),b.getDate()))/864e5);
+
+function wielkanoc(y){
+  const a=y%19,b=Math.floor(y/100),c=y%100,d=Math.floor(b/4),e=b%4,f=Math.floor((b+8)/25),g=Math.floor((b-f+1)/3),
+  h=(19*a+b-d-g+15)%30,i=Math.floor(c/4),k=c%4,l=(32+2*e+2*i-h-k)%7,m=Math.floor((a+11*h+22*l)/451),
+  w=h+l-7*m+114;
+  return new Date(y,Math.floor(w/31)-1,(w%31)+1);
+}
+function swieto(d){
+  const s={"1.1":"Nowy Rok","6.1":"Trzech Króli","1.5":"Święto Pracy","3.5":"Święto Konstytucji 3 Maja","15.8":"Wniebowzięcie NMP","1.11":"Wszystkich Świętych","11.11":"Święto Niepodległości","25.12":"Boże Narodzenie","26.12":"Drugi dzień Świąt"};
+  const k=d.getDate()+"."+(d.getMonth()+1);
+  if(s[k]) return s[k];
+  return {0:"Wielkanoc",1:"Poniedziałek Wielkanocny",49:"Zielone Świątki",60:"Boże Ciało"}[doby(d,wielkanoc(d.getFullYear()))]||"";
+}
+function tydzien(d){
+  const t=new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate())),n=t.getUTCDay()||7;
+  t.setUTCDate(t.getUTCDate()+4-n);
+  return Math.ceil(((t-Date.UTC(t.getUTCFullYear(),0,1))/864e5+1)/7);
+}
+function ksiezyc(d){
+  const syn=29.530588853,f=((((d.getTime()-Date.UTC(2000,0,6,18,14))/864e5)%syn)+syn)%syn;
+  return ["🌑","🌒","🌓","🌔","🌕","🌖","🌗","🌘"][Math.round(f/syn*8)%8];
+}
+function wypelnij(el,d){
+  const sw=swieto(d), czerwony=d.getDay()===0||sw;
+  el.style.setProperty("--kolor", czerwony ? "#c1121f" : "hsl("+(d.getMonth()*30+10)+",62%,36%)");
+  const nr=doby(d,new Date(d.getFullYear(),0,0));
+  el.innerHTML=
+    '<div class="gora">'+M[d.getMonth()]+'</div>'+
+    '<div class="dzien">'+d.getDate()+'</div>'+
+    '<div class="dt">'+D[d.getDay()]+'</div>'+
+    '<div class="sw">'+(sw||"&nbsp;")+'</div>'+
+    '<div class="info"><span>tydz. '+tydzien(d)+'</span><span>'+ksiezyc(d)+'</span><span>dzień '+nr+'</span></div>'+
+    '<div class="cyt">'+C[nr%C.length]+'</div>'+
+    '<div class="rok">'+d.getFullYear()+'</div>';
+}
+
+/* spirala */
+const sp=document.getElementById("spirala");
+for(let i=0;i<10;i++) sp.appendChild(document.createElement("span"));
+
+const scena=document.getElementById("scena"), gora=document.getElementById("gora"), pod=document.getElementById("pod");
+let cur=new Date(); cur.setHours(12,0,0,0);
+function odswiez(){ wypelnij(gora,cur); wypelnij(pod,dodaj(cur,1)); }
+odswiez();
+
+/* dźwięk darcia papieru */
+let ac, dzwiek=true;
+function szum(){
+  if(!dzwiek) return;
+  try{
+    ac=ac||new (window.AudioContext||window.webkitAudioContext)();
+    const len=Math.floor(ac.sampleRate*.7), buf=ac.createBuffer(1,len,ac.sampleRate), dane=buf.getChannelData(0);
+    for(let i=0;i<len;i++){const t=i/len; dane[i]=(Math.random()*2-1)*Math.min(1,t*25)*(1-t)*(.55+.45*Math.sin(t*110));}
+    const s=ac.createBufferSource(); s.buffer=buf;
+    const f=ac.createBiquadFilter(); f.type="bandpass"; f.Q.value=.8;
+    f.frequency.setValueAtTime(1400,ac.currentTime); f.frequency.linearRampToValueAtTime(4800,ac.currentTime+.55);
+    const g=ac.createGain(); g.gain.value=.55;
+    s.connect(f); f.connect(g); g.connect(ac.destination); s.start();
+  }catch(e){}
+}
+
+/* animacja: kartka odchyla się od góry, szarpie i spada */
+const KF=[
+  {offset:0,   transform:"perspective(900px) translate3d(0,0,0) rotateX(0) rotateZ(0)",opacity:1},
+  {offset:.22, transform:"perspective(900px) translate3d(0,-1%,0) rotateX(28deg) rotateZ(-1.5deg)",opacity:1},
+  {offset:.45, transform:"perspective(900px) translate3d(3%,-6%,0) rotateX(62deg) rotateZ(-6deg)",opacity:1},
+  {offset:.75, transform:"perspective(900px) translate3d(40%,70%,0) rotateX(100deg) rotateZ(22deg)",opacity:1},
+  {offset:1,   transform:"perspective(900px) translate3d(75%,180%,0) rotateX(150deg) rotateZ(48deg)",opacity:0}
+];
+const lekkie=matchMedia("(prefers-reduced-motion: reduce)").matches;
+let zajety=false;
+
+function zmien(n){
+  if(zajety) return;
+  zajety=true; szum();
+  const czas=lekkie?1:(n>0?1200:900);
+  if(n>0){
+    const lot=gora.cloneNode(true);
+    lot.removeAttribute("id"); lot.removeAttribute("tabindex"); lot.removeAttribute("role");
+    lot.classList.add("leci"); scena.appendChild(lot);
+    cur=dodaj(cur,1); odswiez();
+    lot.animate(KF,{duration:czas,easing:"cubic-bezier(.45,0,.85,.6)",fill:"forwards"})
+       .onfinish=()=>{lot.remove(); zajety=false;};
+  }else{
+    cur=dodaj(cur,-1); odswiez();
+    gora.animate(KF,{duration:czas,easing:"cubic-bezier(.15,.4,.55,1)",direction:"reverse"})
+        .onfinish=()=>{zajety=false;};
+  }
+}
+function dzisiaj(){ cur=new Date(); cur.setHours(12,0,0,0); odswiez(); }
+
+gora.addEventListener("click",()=>zmien(1));
+document.getElementById("dalej").onclick=()=>zmien(1);
+document.getElementById("wstecz").onclick=()=>zmien(-1);
+document.getElementById("dzis").onclick=dzisiaj;
+const bd=document.getElementById("dzwiek");
+bd.onclick=()=>{dzwiek=!dzwiek; bd.textContent=dzwiek?"🔊":"🔇"; bd.setAttribute("aria-pressed",dzwiek);};
+document.addEventListener("keydown",e=>{
+  if(e.key==="ArrowRight"||e.key===" "||e.key==="Enter"){ if(e.target.tagName!=="BUTTON"){e.preventDefault(); zmien(1);} }
+  else if(e.key==="ArrowLeft") zmien(-1);
+});
+
+/* przechył 3D za myszką */
+document.addEventListener("pointermove",e=>{
+  if(e.pointerType!=="mouse"||lekkie) return;
+  const x=(e.clientX/innerWidth-.5)*16, y=(e.clientY/innerHeight-.5)*-14;
+  scena.style.transform="perspective(1300px) rotateY("+x+"deg) rotateX("+y+"deg)";
+});
+
+/* zegar */
+function zegar(){const d=new Date(); document.getElementById("zegar").textContent=dwie(d.getHours())+":"+dwie(d.getMinutes())+":"+dwie(d.getSeconds());}
+zegar(); setInterval(zegar,1000);
+</script>
+</body>
+</html>
