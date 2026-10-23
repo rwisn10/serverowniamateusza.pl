@@ -1,7 +1,7 @@
 /* PRZERWA TECHNICZNA: true = wszystkie strony pokazują przerwa.html; false = strona działa normalnie */
 const MAINTENANCE=false;
 if(MAINTENANCE&&!/przerwa\.html$/.test(location.pathname)){document.documentElement.style.visibility='hidden';location.replace('przerwa.html');}
-const PAGES=[['index.html','Start'],['o-mnie.html','O mnie'],['poglady.html','Poglądy'],['program.html','Program'],['dzialania.html','Działania'],['artykuly.html','Artykuły'],['aktualnosci.html','Aktualności'],['kontakt.html','Kontakt']];
+const PAGES=[['index.html','Start'],['o-mnie.html','O mnie'],['poglady.html','Poglądy'],['program.html','Program'],['obietnice.html','Obietnice'],['dzialania.html','Działania'],['artykuly.html','Artykuły'],['aktualnosci.html','Aktualności'],['kontakt.html','Kontakt']];
 let cur=location.pathname.split('/').pop()||'index.html';if(cur==='artykul.html')cur='artykuly.html';
 /* SPOTKANIA: edytuj tylko tę listę. Minione terminy znikają same. [data RRRR-MM-DD, godzina, miejsce, temat] */
 const MEETS=[
@@ -39,3 +39,12 @@ const gl=document.createElement('div');gl.className='glow';document.body.appendC
 document.addEventListener('mousemove',e=>{gl.style.transform=`translate(${e.clientX}px,${e.clientY}px)`;
  document.querySelectorAll('.card').forEach(c=>{const r=c.getBoundingClientRect();if(r.bottom<0||r.top>innerHeight)return;c.style.setProperty('--mx',(e.clientX-r.left)+'px');c.style.setProperty('--my',(e.clientY-r.top)+'px')})});
 document.querySelectorAll('[data-tilt]').forEach(el=>{el.addEventListener('mousemove',e=>{const r=el.getBoundingClientRect(),x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;el.style.transform=`perspective(900px) rotateY(${x*18}deg) rotateX(${-y*18}deg)`});el.addEventListener('mouseleave',()=>el.style.transform='')});
+
+/* motywy kolorystyczne */
+const TH=[['ogien','#ff2d4d,#ffc857','Ogień'],['granat','#4f8cff,#ffd166','Granat i złoto'],['las','#3ddc84,#ffc857','Las i pszczoły'],['polska','#ff3355,#ffffff','Biało-czerwony']];
+let th='ogien';try{th=localStorage.getItem('theme')||'ogien'}catch(e){}
+const setTh=t=>{th=t;document.documentElement.dataset.theme=t;try{localStorage.setItem('theme',t)}catch(e){}document.querySelectorAll('.themes button').forEach(b=>b.classList.toggle('on',b.dataset.t===t))};
+const tb=document.createElement('div');tb.className='themes';tb.innerHTML=TH.map(([k,g,n])=>`<button data-t="${k}" title="${n}" aria-label="Motyw: ${n}" style="--d:linear-gradient(135deg,${g})"></button>`).join('');document.body.appendChild(tb);
+tb.querySelectorAll('button').forEach(b=>b.onclick=()=>setTh(b.dataset.t));setTh(th);
+/* pszczoły */
+document.querySelectorAll('.hero,.page-head.bees').forEach(h=>{for(let i=0;i<7;i++){const b=document.createElement('span');b.className='bee';b.textContent='🐝';b.style.cssText=`top:${12+Math.random()*70}%;font-size:${1+Math.random()*1.1}rem;--t:${14+Math.random()*14}s;--dl:${-Math.random()*20}s`;h.appendChild(b)}});
