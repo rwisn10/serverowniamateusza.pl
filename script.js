@@ -13,7 +13,7 @@ const MEETS=[
 const MN=['sty','lut','mar','kwi','maj','cze','lip','sie','wrz','paź','lis','gru'],DN=['niedz.','pon.','wt.','śr.','czw.','pt.','sob.'];
 const sup='<a class="support" href="https://pis.org.pl/" target="_blank" rel="noopener" title="Prawo i Sprawiedliwość"><span>Popierany przez:</span><img src="pis-logo.png" alt="Prawo i Sprawiedliwość"></a>';
 const today=new Date().toLocaleDateString('pl-PL',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
-document.querySelector('#nav').outerHTML=`<header class="rail" id="nav"><a class="brand" href="index.html"><img src="logo.png" alt="Herb"><b>Mateusz<br>Talar</b><small>KOMITET WYBORCZY</small></a><button class="burger" aria-label="Menu">☰</button><ul class="menu">${PAGES.map(([h,t])=>`<li><a href="${h}" class="${h===cur?'on':''}">${t}</a></li>`).join('')}</ul><div class="rail-note"><div class="k">Najbliższe spotkanie</div><ul class="meets" data-meets="list" data-max="1"></ul><div class="date-t">${today}</div></div></header>`;
+document.querySelector('#nav').outerHTML=`<header class="rail" id="nav"><a class="brand" href="index.html"><img src="logo.png" alt="Herb"><b>Mateusz Talar</b></a><button class="burger" aria-label="Menu">☰</button><ul class="menu">${PAGES.map(([h,t])=>`<li><a href="${h}" class="${h===cur?'on':''}">${t}</a></li>`).join('')}</ul></header>`;
 document.querySelector('#foot').outerHTML=`<footer><div class="wrap"><div class="cols"><div><h4>Mateusz Talar — Komitet Wyborczy</h4><p>Kandydat niezależny, powiat łęczyński. Praca, rodzina, bezpieczeństwo.</p>${sup}</div><div><h4>Strony</h4>${PAGES.map(([h,t])=>`<a href="${h}">${t}</a>`).join('')}</div><div><h4>Kontakt</h4><a href="mailto:sztab@example.com">sztab@example.com</a><a href="kontakt.html">Dołącz do sztabu</a></div></div><div class="fine">Strona fikcyjna, przygotowana jako przykład. Postaci, cytaty i wydarzenia są wymyślone.</div></div></footer>`;
 const nav=document.getElementById('nav');nav.querySelector('.burger').onclick=()=>nav.querySelector('.menu').classList.toggle('open');
 const t0=new Date();t0.setHours(0,0,0,0);
@@ -33,3 +33,9 @@ const tt=document.createElement('button');tt.id='totop';tt.setAttribute('aria-la
 addEventListener('scroll',()=>{pr.style.setProperty('--w',(scrollY/Math.max(1,document.documentElement.scrollHeight-innerHeight)*100)+'%');tt.classList.toggle('show',scrollY>700)});
 addEventListener('DOMContentLoaded',()=>{const b=document.getElementById('body');if(!b)return;const hs=[...b.querySelectorAll('h3')];if(hs.length<3)return;
  hs.forEach((h,i)=>h.id='s'+(i+1));b.querySelector('p').insertAdjacentHTML('afterend','<nav class="toc"><b>W tym tekście</b><ol>'+hs.map(h=>`<li><a href="#${h.id}">${h.textContent}</a></li>`).join('')+'</ol></nav>')});
+
+/* efekty: kursor, szklane karty, tilt */
+const gl=document.createElement('div');gl.className='glow';document.body.appendChild(gl);
+document.addEventListener('mousemove',e=>{gl.style.transform=`translate(${e.clientX}px,${e.clientY}px)`;
+ document.querySelectorAll('.card').forEach(c=>{const r=c.getBoundingClientRect();if(r.bottom<0||r.top>innerHeight)return;c.style.setProperty('--mx',(e.clientX-r.left)+'px');c.style.setProperty('--my',(e.clientY-r.top)+'px')})});
+document.querySelectorAll('[data-tilt]').forEach(el=>{el.addEventListener('mousemove',e=>{const r=el.getBoundingClientRect(),x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;el.style.transform=`perspective(900px) rotateY(${x*18}deg) rotateX(${-y*18}deg)`});el.addEventListener('mouseleave',()=>el.style.transform='')});
