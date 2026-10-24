@@ -1,7 +1,7 @@
 /* PRZERWA TECHNICZNA: true = wszystkie strony pokazują przerwa.html; false = strona działa normalnie */
 const MAINTENANCE=false;
 if(MAINTENANCE&&!/przerwa\.html$/.test(location.pathname)){document.documentElement.style.visibility='hidden';location.replace('przerwa.html');}
-const PAGES=[['index.html','Start'],['o-mnie.html','O mnie'],['poglady.html','Poglądy'],['program.html','Program'],['obietnice.html','Obietnice'],['dzialania.html','Działania'],['artykuly.html','Artykuły'],['aktualnosci.html','Aktualności'],['kontakt.html','Kontakt']];
+const PAGES=[['index.html','Start'],['o-mnie.html','O mnie'],['poglady.html','Poglądy'],['program.html','Program'],['obietnice.html','Obietnice'],['dzialania.html','Działania'],['artykuly.html','Artykuły'],['aktualnosci.html','Aktualności'],['memy.html','Memy'],['kontakt.html','Kontakt']];
 let cur=location.pathname.split('/').pop()||'index.html';if(cur==='artykul.html')cur='artykuly.html';
 /* SPOTKANIA: edytuj tylko tę listę. Minione terminy znikają same. [data RRRR-MM-DD, godzina, miejsce, temat] */
 const MEETS=[

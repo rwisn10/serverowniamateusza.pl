@@ -100,3 +100,12 @@ body{background:var(--bg)}html{background:var(--bg)}
 .hero,.page-head{position:relative;overflow:hidden}
 .marquee.m2 div{animation-direction:reverse;animation-duration:50s;font-size:clamp(1rem,2.2vw,1.6rem);-webkit-text-stroke:0;color:var(--dim);letter-spacing:.08em}
 @media(max-width:900px){.themes{left:10px;bottom:12px}}
+
+/* memy */
+.memes{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:22px}
+.meme{padding:14px 14px 18px}.meme h3{font-size:1rem;margin:14px 4px 6px}.meme p{margin:0 4px 12px;font-size:.88rem}
+.vid{position:relative;aspect-ratio:9/16;border-radius:18px;overflow:hidden;background:#000;cursor:pointer}.vid video{width:100%;height:100%;object-fit:contain;display:block}
+.vid .play{position:absolute;inset:0;margin:auto;width:70px;height:70px;border-radius:50%;border:0;background:var(--grad);color:#fff;font-size:1.6rem;padding-left:5px;cursor:pointer;box-shadow:0 0 40px rgba(var(--rgb),.7);transition:.25s;animation:pls 2.4s ease-in-out infinite}.vid:hover .play{transform:scale(1.12)}
+.vid.playing .play{opacity:0;pointer-events:none}.vid .len{position:absolute;right:10px;bottom:10px;padding:3px 10px;border-radius:99px;background:rgba(0,0,0,.65);font-size:.72rem;font-weight:700}
+.like{margin:0 4px;padding:9px 18px;border-radius:99px;border:1px solid var(--line);background:rgba(255,255,255,.05);color:#fff;font:inherit;font-size:.82rem;font-weight:600;cursor:pointer;transition:.2s}.like:hover{background:rgba(255,255,255,.12)}.like.on{border-color:transparent;background:var(--grad)}.like.pop .h{display:inline-block;animation:popk .5s}@keyframes popk{50%{transform:scale(1.9)}}
+@media(max-width:1250px){.menu a{padding:8px 8px;font-size:.62rem}}@media(max-width:1150px){.brand b{display:none}}
