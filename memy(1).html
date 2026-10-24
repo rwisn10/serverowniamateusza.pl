@@ -1,0 +1,14 @@
+<!DOCTYPE html><html lang="pl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Ulubione memy — Mateusz Talar</title><meta name="description" content="Ulubione memy sztabu Mateusza Talara."><link rel="icon" href="logo.png"><link rel="stylesheet" href="style.css"></head><body><div id="nav"></div><main>
+<header class="page-head"><div class="wrap"><span class="pill">Dla rozrywki</span><h1>Ulubione memy</h1><p>Kolekcja, która poprawia humor całemu sztabowi. Kliknij, żeby odtworzyć, i zaznacz serduszkiem swoje ulubione.</p></div></header>
+<section style="padding-top:20px"><div class="wrap"><div class="memes" id="memes"></div></div></section>
+</main><div id="foot"></div><script src="script.js"></script><script>
+/* MEMY: dodaj plik do folderu memy/ i dopisz wiersz [nazwa_pliku_bez_rozszerzenia, tytuł, opis, czas] */
+const MEMES=[["meme1", "Beef: podwale i Vetter", "Szkolne rywalizacje w najlepszym wydaniu.", "0:15"], ["meme2", "Wywiad jak z National Geographic", "Powaga sytuacji: maksymalna.", "2:18"], ["meme3", "Czerwone strzałki na polu", "Gdy wiesz, gdzie patrzeć.", "0:11"], ["meme4", "Pilne wiadomości", "Licznik tyka, studio na żywo.", "2:18"], ["meme5", "Smacznego!", "Kebab, który poprawia dzień.", "0:12"], ["meme6", "Ty na egzaminie państwowym w Word", "Każdy zna to uczucie.", "0:24"], ["meme7", "Zwykły dzień, zwykły płyn", "Kontemplacja codzienności.", "0:17"]];
+let liked={};try{liked=JSON.parse(localStorage.getItem('memlikes')||'{}')}catch(e){}
+const box=document.getElementById('memes');
+box.innerHTML=MEMES.map(([f,t,d,l])=>`<article class="card meme"><div class="vid" data-f="${f}"><video preload="none" playsinline loop poster="${f}.jpg" src="${f}.mp4"></video><button class="play" aria-label="Odtwórz">▶</button><span class="len">${l}</span></div><h3>${t}</h3><p>${d}</p><button class="like${liked[f]?' on':''}" data-f="${f}"><span class="h">${liked[f]?'♥':'♡'}</span> Ulubione</button></article>`).join('');
+box.querySelectorAll('.vid').forEach(v=>v.addEventListener('click',e=>{const vd=v.querySelector('video');
+ if(vd.paused){document.querySelectorAll('.vid video').forEach(o=>{if(o!==vd){o.pause();o.parentNode.classList.remove('playing')}});vd.play();v.classList.add('playing');vd.controls=true}
+ else{vd.pause();v.classList.remove('playing')}}));
+box.querySelectorAll('.like').forEach(b=>b.onclick=()=>{const f=b.dataset.f;liked[f]=!liked[f];b.classList.toggle('on',liked[f]);b.querySelector('.h').textContent=liked[f]?'♥':'♡';if(liked[f]){b.classList.add('pop');setTimeout(()=>b.classList.remove('pop'),500)}try{localStorage.setItem('memlikes',JSON.stringify(liked))}catch(e){}});
+</script></body></html>
