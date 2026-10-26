@@ -14,6 +14,13 @@
   .adm-wrap th{font-size:.72rem;text-transform:uppercase;letter-spacing:.05em;color:#666}
   .adm-wrap td.msg{white-space:pre-wrap;min-width:240px}
   #dash{display:none}
+  #songsPanel{display:none}
+  #songsPanel .card{margin-bottom:18px}
+  #songsPanel label{display:block;font-weight:700;margin:12px 0 6px}
+  #songsPanel input,#songsPanel textarea{width:100%}
+  .song-row{display:flex;flex-wrap:wrap;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid #e4e4e4}
+  .song-row strong{flex:1 1 180px}
+  .song-row audio{flex:2 1 260px;max-width:100%}
 </style></head><body><div id="nav"></div><header class="page-head"><div class="wrap"><span class="pill">Sztab</span><h1>Panel administracyjny</h1><p>Zgłoszenia i wiadomości zebrane ze strony.</p></div></header>
 <section><div class="wrap">
 
@@ -39,9 +46,23 @@
     <div class="adm-tabs">
       <button class="on" data-t="contacts" type="button">Wiadomości</button>
       <button data-t="signups" type="button">Zgłoszenia do sztabu</button>
+      <button data-t="songs" type="button">Piosenki</button>
     </div>
     <p id="count" style="font-weight:600"></p>
     <div class="adm-wrap" id="tableWrap"></div>
+    <div id="songsPanel">
+      <div class="card">
+        <h3>Dodaj piosenkę</h3>
+        <form id="songForm">
+          <label for="s-title">Tytuł</label><input id="s-title" required maxlength="120">
+          <label for="s-desc">Opis (opcjonalnie)</label><textarea id="s-desc" rows="3" maxlength="500"></textarea>
+          <label for="s-file">Plik audio (MP3, WAV, OGG, M4A — do 50 MB)</label><input id="s-file" type="file" accept="audio/*" required>
+          <button class="btn red" id="songBtn" style="margin-top:16px">Dodaj</button>
+          <p id="songMsg" role="status" style="margin:10px 0 0;font-weight:600"></p>
+        </form>
+      </div>
+      <div class="card"><h3>Dodane piosenki</h3><div id="songList"></div></div>
+    </div>
   </div>
 
 </div></section>
@@ -59,6 +80,12 @@
   function fmtDate(v){ try{ return new Date(v).toLocaleString('pl-PL'); }catch(e){ return v||'—'; } }
 
   function render(){
+    var isSongs = tab === 'songs';
+    $('songsPanel').style.display = isSongs ? 'block' : 'none';
+    $('count').style.display = isSongs ? 'none' : '';
+    $('tableWrap').style.display = isSongs ? 'none' : '';
+    $('csvBtn').style.display = isSongs ? 'none' : '';
+    if(isSongs){ loadSongs(); return; }
     var c = CFG[tab], rows = data[tab];
     $('count').textContent = rows.length + ' ' + c.label;
     var wrap = $('tableWrap'); wrap.textContent = '';
@@ -89,6 +116,49 @@
     }
     render();
   }
+
+  function songMsg(t, bad){ var m = $('songMsg'); m.textContent = t; m.style.color = bad ? '#c41230' : '#1a7f37'; }
+
+  async function loadSongs(){
+    var box = $('songList'); box.textContent = 'Wczytywanie…';
+    var r = await sb.from('songs').select('*').order('created_at', { ascending:false });
+    if(r.error){ box.textContent = 'Nie udało się wczytać piosenek: ' + r.error.message; return; }
+    box.textContent = '';
+    if(!r.data.length){ box.textContent = 'Brak piosenek. Dodaj pierwszą powyżej.'; return; }
+    r.data.forEach(function(s){
+      var row = document.createElement('div'); row.className = 'song-row';
+      var t = document.createElement('strong'); t.textContent = s.title;
+      var a = document.createElement('audio'); a.controls = true; a.preload = 'none'; a.src = s.audio_url;
+      var d = document.createElement('button'); d.type = 'button'; d.className = 'btn dark'; d.textContent = 'Usuń';
+      d.addEventListener('click', async function(){
+        if(!confirm('Usunąć piosenkę „' + s.title + '”?')) return;
+        d.disabled = true;
+        if(s.file_path){ await sb.storage.from('songs').remove([s.file_path]); }
+        var del = await sb.from('songs').delete().eq('id', s.id);
+        if(del.error){ songMsg('Nie udało się usunąć: ' + del.error.message, true); d.disabled = false; return; }
+        songMsg('Piosenka usunięta.'); loadSongs();
+      });
+      row.appendChild(t); row.appendChild(a); row.appendChild(d); box.appendChild(row);
+    });
+  }
+
+  $('songForm').addEventListener('submit', async function(ev){
+    ev.preventDefault();
+    var file = $('s-file').files[0], title = $('s-title').value.trim();
+    if(!file || !title) return;
+    if(file.size > 52428800){ songMsg('Plik jest większy niż 50 MB.', true); return; }
+    $('songBtn').disabled = true; songMsg('Wysyłanie… większe pliki mogą potrwać chwilę.');
+    var path = Date.now() + '-' + file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+    var up = await sb.storage.from('songs').upload(path, file, { contentType:file.type || 'audio/mpeg', upsert:false });
+    if(up.error){ songMsg('Nie udało się wgrać pliku: ' + up.error.message, true); $('songBtn').disabled = false; return; }
+    var url = sb.storage.from('songs').getPublicUrl(path).data.publicUrl;
+    var ins = await sb.from('songs').insert([{ title:title, description:$('s-desc').value.trim() || null, audio_url:url, file_path:path }]);
+    if(ins.error){
+      await sb.storage.from('songs').remove([path]);
+      songMsg('Nie udało się zapisać piosenki: ' + ins.error.message, true); $('songBtn').disabled = false; return;
+    }
+    songMsg('Piosenka dodana!'); $('songForm').reset(); $('songBtn').disabled = false; loadSongs();
+  });
 
   function csvCell(v){
     var s = String(v == null ? '' : v);

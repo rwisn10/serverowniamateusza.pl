@@ -1,0 +1,37 @@
+<!DOCTYPE html><html lang="pl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Piosenki — Mateusz Talar</title><meta name="description" content="Piosenki kampanii Mateusza Talara."><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,800;1,9..144,600&family=Manrope:wght@400;600;800&display=swap" rel="stylesheet"><link rel="icon" href="logo.png"><link rel="stylesheet" href="style.css">
+<style>
+  .song-card audio{width:100%;margin:12px 0 6px}
+  .song-card h3{margin:0 0 4px}
+  .song-card p{margin:0 0 6px}
+  .song-card a.dl{font-weight:700}
+  #songGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px}
+</style></head><body><div id="nav"></div><header class="page-head"><div class="wrap"><span class="pill">Muzyka</span><h1>Piosenki</h1><p>Posłuchaj piosenek z naszej kampanii.</p></div></header>
+<section><div class="wrap">
+  <div id="songGrid">
+    <div class="card song-card">
+      <h3>Ręce do pracy</h3>
+      <p>Oficjalny hymn kampanii.</p>
+      <audio controls preload="none" src="hymn-rece-do-pracy.mp3"></audio>
+      <a class="dl" href="hymn-rece-do-pracy.mp3" download>Pobierz</a>
+    </div>
+  </div>
+  <p id="songStatus" style="margin-top:18px;font-weight:600"></p>
+</div></section>
+<div id="foot"></div><script src="script.js"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script><script src="supabase-config.js"></script><script>
+(function(){
+  var grid = document.getElementById('songGrid'), status = document.getElementById('songStatus');
+  if(!(window.supabase && window.SB_URL)) return;
+  var sb = window.supabase.createClient(window.SB_URL, window.SB_KEY);
+  sb.from('songs').select('*').order('created_at', { ascending:false }).then(function(r){
+    if(r.error){ return; }   // brak tabeli / błąd sieci: zostaje sam hymn
+    (r.data || []).forEach(function(s){
+      var card = document.createElement('div'); card.className = 'card song-card';
+      var h = document.createElement('h3'); h.textContent = s.title; card.appendChild(h);
+      if(s.description){ var p = document.createElement('p'); p.textContent = s.description; card.appendChild(p); }
+      var a = document.createElement('audio'); a.controls = true; a.preload = 'none'; a.src = s.audio_url; card.appendChild(a);
+      var dl = document.createElement('a'); dl.className = 'dl'; dl.href = s.audio_url; dl.target = '_blank'; dl.rel = 'noopener'; dl.textContent = 'Pobierz'; card.appendChild(dl);
+      grid.appendChild(card);
+    });
+  });
+})();
+</script></body></html>
