@@ -1,0 +1,130 @@
+<!DOCTYPE html><html lang="pl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>Panel administracyjny — Mateusz Talar</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,800;1,9..144,600&family=Manrope:wght@400;600;800&display=swap" rel="stylesheet"><link rel="icon" href="logo.png"><link rel="stylesheet" href="style.css">
+<style>
+  .adm-box{max-width:440px;margin:0 auto}
+  .adm-box label{display:block;font-weight:700;margin:14px 0 6px}
+  .adm-box input{width:100%}
+  .adm-err{color:#c41230;font-weight:600;min-height:1.3em;margin-top:12px}
+  .adm-top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+  .adm-tabs{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+  .adm-tabs button{padding:10px 18px;border:1px solid #d6d6d6;background:#fff;font-weight:700;cursor:pointer;border-radius:8px;font-family:inherit}
+  .adm-tabs button.on{background:#0b2545;color:#fff;border-color:#0b2545}
+  .adm-wrap{overflow-x:auto}
+  .adm-wrap table{width:100%;border-collapse:collapse;font-size:.92rem;background:#fff}
+  .adm-wrap th,.adm-wrap td{text-align:left;padding:10px 12px;border-bottom:1px solid #e4e4e4;vertical-align:top}
+  .adm-wrap th{font-size:.72rem;text-transform:uppercase;letter-spacing:.05em;color:#666}
+  .adm-wrap td.msg{white-space:pre-wrap;min-width:240px}
+  #dash{display:none}
+</style></head><body><div id="nav"></div><header class="page-head"><div class="wrap"><span class="pill">Sztab</span><h1>Panel administracyjny</h1><p>Zgłoszenia i wiadomości zebrane ze strony.</p></div></header>
+<section><div class="wrap">
+
+  <div class="card adm-box" id="gate">
+    <h3>Logowanie</h3>
+    <form id="loginForm">
+      <label for="a-mail">E-mail</label><input id="a-mail" type="email" autocomplete="username" required>
+      <label for="a-pass">Hasło</label><input id="a-pass" type="password" autocomplete="current-password" required>
+      <button class="btn red" id="loginBtn" style="margin-top:18px">Zaloguj</button>
+      <div class="adm-err" id="loginErr" role="alert"></div>
+    </form>
+  </div>
+
+  <div id="dash">
+    <div class="adm-top">
+      <div><strong id="who"></strong></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn dark" id="refreshBtn" type="button">Odśwież</button>
+        <button class="btn dark" id="csvBtn" type="button">Pobierz CSV</button>
+        <button class="btn red" id="logoutBtn" type="button">Wyloguj</button>
+      </div>
+    </div>
+    <div class="adm-tabs">
+      <button class="on" data-t="contacts" type="button">Wiadomości</button>
+      <button data-t="signups" type="button">Zgłoszenia do sztabu</button>
+    </div>
+    <p id="count" style="font-weight:600"></p>
+    <div class="adm-wrap" id="tableWrap"></div>
+  </div>
+
+</div></section>
+<div id="foot"></div><script src="script.js"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script><script src="supabase-config.js"></script><script>
+(function(){
+  var sb = window.supabase.createClient(window.SB_URL, window.SB_KEY);
+  var CFG = {
+    contacts:{ label:'wiadomości', file:'wiadomosci.csv', cols:[['created_at','Data'],['name','Imię i nazwisko'],['email','E-mail'],['message','Wiadomość']] },
+    signups: { label:'zgłoszeń',   file:'zgloszenia.csv', cols:[['created_at','Data'],['name','Imię i nazwisko'],['email','E-mail'],['role','Rola']] }
+  };
+  var tab = 'contacts', data = { contacts:[], signups:[] };
+
+  var $ = function(id){ return document.getElementById(id); };
+  function show(isIn){ $('gate').style.display = isIn ? 'none' : 'block'; $('dash').style.display = isIn ? 'block' : 'none'; }
+  function fmtDate(v){ try{ return new Date(v).toLocaleString('pl-PL'); }catch(e){ return v||'—'; } }
+
+  function render(){
+    var c = CFG[tab], rows = data[tab];
+    $('count').textContent = rows.length + ' ' + c.label;
+    var wrap = $('tableWrap'); wrap.textContent = '';
+    if(!rows.length){ var p = document.createElement('p'); p.textContent = 'Brak wpisów.'; wrap.appendChild(p); return; }
+    var table = document.createElement('table'), thead = document.createElement('thead'), hr = document.createElement('tr');
+    c.cols.forEach(function(col){ var th = document.createElement('th'); th.textContent = col[1]; hr.appendChild(th); });
+    thead.appendChild(hr); table.appendChild(thead);
+    var tbody = document.createElement('tbody');
+    rows.forEach(function(r){
+      var tr = document.createElement('tr');
+      c.cols.forEach(function(col){
+        var td = document.createElement('td');
+        td.textContent = col[0]==='created_at' ? fmtDate(r.created_at) : (r[col[0]] || '—');
+        if(col[0]==='message') td.className = 'msg';
+        tr.appendChild(td);
+      });
+      tbody.appendChild(tr);
+    });
+    table.appendChild(tbody); wrap.appendChild(table);
+  }
+
+  async function load(){
+    $('count').textContent = 'Wczytywanie…';
+    for(var key in CFG){
+      var r = await sb.from(key).select('*').order('created_at', { ascending:false });
+      if(r.error){ $('count').textContent = 'Nie udało się wczytać danych: ' + r.error.message; return; }
+      data[key] = r.data || [];
+    }
+    render();
+  }
+
+  function csvCell(v){
+    var s = String(v == null ? '' : v);
+    if(/^[=+\-@\t\r]/.test(s)) s = "'" + s;           // ochrona przed formułami w Excelu
+    return '"' + s.replace(/"/g, '""') + '"';
+  }
+  function downloadCsv(){
+    var c = CFG[tab];
+    var lines = [c.cols.map(function(x){ return csvCell(x[1]); }).join(';')];
+    data[tab].forEach(function(r){
+      lines.push(c.cols.map(function(x){ return csvCell(x[0]==='created_at' ? fmtDate(r.created_at) : r[x[0]]); }).join(';'));
+    });
+    var blob = new Blob(['\ufeff' + lines.join('\r\n')], { type:'text/csv;charset=utf-8;' });
+    var url = URL.createObjectURL(blob), a = document.createElement('a');
+    a.href = url; a.download = c.file; document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+  }
+
+  $('loginForm').addEventListener('submit', async function(ev){
+    ev.preventDefault();
+    $('loginErr').textContent = ''; $('loginBtn').disabled = true;
+    var r = await sb.auth.signInWithPassword({ email:$('a-mail').value.trim(), password:$('a-pass').value });
+    $('loginBtn').disabled = false;
+    if(r.error){ $('loginErr').textContent = 'Błędny e-mail lub hasło.'; return; }
+    $('a-pass').value = ''; enter(r.data.user);
+  });
+  $('logoutBtn').addEventListener('click', async function(){ await sb.auth.signOut(); show(false); });
+  $('refreshBtn').addEventListener('click', load);
+  $('csvBtn').addEventListener('click', downloadCsv);
+  document.querySelectorAll('.adm-tabs button').forEach(function(b){
+    b.addEventListener('click', function(){
+      document.querySelectorAll('.adm-tabs button').forEach(function(x){ x.classList.remove('on'); });
+      b.classList.add('on'); tab = b.dataset.t; render();
+    });
+  });
+
+  function enter(user){ $('who').textContent = 'Zalogowano: ' + (user && user.email || ''); show(true); load(); }
+  sb.auth.getSession().then(function(r){ if(r.data && r.data.session) enter(r.data.session.user); else show(false); });
+})();
+</script></body></html>
