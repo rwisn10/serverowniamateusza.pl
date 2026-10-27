@@ -3,117 +3,200 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Fizyka – magnetyzm: rozwiązania</title>
+<title>Fizyka – rozwiązania sprawdzianów</title>
 <script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']]},svg:{fontCache:'global'}};</script>
 <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js"></script>
 <style>
-:root{--bg:#f6f7fb;--card:#fff;--text:#1c2030;--muted:#5b6275;--accent:#4f46e5;--ok:#0f9d58;--line:#e2e5ef;--ans:#eef0ff;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#12141c;--card:#1b1e2a;--text:#e8eaf3;--muted:#9aa1b5;--accent:#8b87ff;--ok:#4ade80;--line:#2c3040;--ans:#242850}}
-:root[data-theme="dark"]{--bg:#12141c;--card:#1b1e2a;--text:#e8eaf3;--muted:#9aa1b5;--accent:#8b87ff;--ok:#4ade80;--line:#2c3040;--ans:#242850}
+:root{--bg:#f4f5fa;--card:#fff;--text:#1a1d2b;--muted:#5d6479;--accent:#4338ca;--accent2:#0ea5a4;--line:#e1e4ee;--ans:#e8f7ee;--ansb:#16a34a;--form:#eef0ff;--warn:#fff7e0;--warnb:#d97706;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#10121a;--card:#1a1d29;--text:#eceef6;--muted:#9ba2b8;--accent:#9a95ff;--accent2:#2dd4bf;--line:#2b3042;--ans:#14301f;--ansb:#4ade80;--form:#23274a;--warn:#33290f;--warnb:#fbbf24}}
+:root[data-theme="dark"]{--bg:#10121a;--card:#1a1d29;--text:#eceef6;--muted:#9ba2b8;--accent:#9a95ff;--accent2:#2dd4bf;--line:#2b3042;--ans:#14301f;--ansb:#4ade80;--form:#23274a;--warn:#33290f;--warnb:#fbbf24}
 *{box-sizing:border-box}
-html{scroll-padding-top:env(safe-area-inset-top,0px)}
-body{margin:0;background:var(--bg);color:var(--text);font:16px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
-header{padding:28px 18px 8px;max-width:820px;margin:0 auto}
-h1{margin:0 0 4px;font-size:1.7rem}
+html{scroll-padding-top:70px;scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);font:17px/1.7 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+header{padding:30px 18px 10px;max-width:860px;margin:0 auto}
+h1{margin:0 0 6px;font-size:2rem;line-height:1.2}
 header p{margin:0;color:var(--muted)}
-nav{max-width:820px;margin:12px auto 0;padding:0 18px;display:flex;flex-wrap:wrap;gap:8px}
-nav a{color:var(--accent);text-decoration:none;border:1px solid var(--line);background:var(--card);padding:4px 12px;border-radius:99px;font-size:.9rem}
-main{max-width:820px;margin:0 auto;padding:12px 18px 48px}
-section{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin-top:16px}
-h2{margin:0 0 10px;font-size:1.25rem;color:var(--accent)}
-h3{margin:16px 0 6px;font-size:1.02rem}
-.ans{background:var(--ans);border-left:4px solid var(--accent);padding:8px 12px;border-radius:8px;margin:10px 0;font-weight:600}
-.ok{color:var(--ok)}
+nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding:10px 18px;border-bottom:1px solid var(--line);margin-top:14px}
+nav div{max-width:860px;margin:0 auto;display:flex;gap:8px;overflow-x:auto}
+nav a{flex:none;color:var(--accent);text-decoration:none;border:1px solid var(--line);background:var(--card);padding:5px 14px;border-radius:99px;font-size:.95rem;font-weight:600}
+main{max-width:860px;margin:0 auto;padding:6px 18px 60px}
+section{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px 24px;margin-top:20px}
+h2{margin:0 0 14px;font-size:1.4rem;color:var(--accent)}
+h3{margin:22px 0 8px;font-size:1.05rem;text-transform:uppercase;letter-spacing:.04em;color:var(--accent2)}
 p{margin:8px 0}
-ul,ol{margin:6px 0;padding-left:22px}
-mjx-container[display="true"]{overflow-x:auto;overflow-y:hidden;max-width:100%}
-.note{color:var(--muted);font-size:.92rem}
+.ans{background:var(--ans);border-left:5px solid var(--ansb);padding:12px 16px;border-radius:10px;margin:16px 0 4px;font-weight:700;font-size:1.08rem}
+.form{background:var(--form);border-radius:12px;padding:10px 16px;margin:10px 0}
+.form b{display:block;font-size:.8rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+.note{background:var(--warn);border-left:5px solid var(--warnb);padding:10px 14px;border-radius:10px;margin:14px 0;font-size:.95rem}
+table{width:100%;border-collapse:collapse;margin:8px 0}
+th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{color:var(--muted);font-size:.85rem;text-transform:uppercase;letter-spacing:.04em}
+td.a{font-weight:700;color:var(--ansb);white-space:nowrap}
+.steps{list-style:none;counter-reset:s;padding:0;margin:8px 0}
+.steps li{counter-increment:s;position:relative;padding:4px 0 4px 44px;margin:10px 0}
+.steps li::before{content:counter(s);position:absolute;left:0;top:4px;width:30px;height:30px;border-radius:50%;background:var(--accent);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center;font-size:.9rem}
+mjx-container[display="true"]{overflow-x:auto;overflow-y:hidden;max-width:100%;margin:.6em 0!important;font-size:112%}
+.sm{font-size:.92rem;color:var(--muted)}
+.view[hidden]{display:none}
+.home{max-width:860px;margin:0 auto;padding:36px 18px 60px}
+.home h1{font-size:2.1rem}
+.cards{display:grid;gap:14px;margin-top:22px}
+.card{display:block;width:100%;text-align:left;font:inherit;color:inherit;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px 22px;cursor:pointer}
+.card.on{border-color:var(--accent);box-shadow:0 2px 14px rgba(67,56,202,.15)}
+.card.on:hover{transform:translateY(-2px)}
+.card h2{margin:0 0 4px;font-size:1.25rem}
+.card p{margin:4px 0;color:var(--muted);font-size:.95rem}
+.card.off{opacity:.6;cursor:default;border-style:dashed}
+.card.off h2{color:var(--muted)}
+.tag{display:inline-block;font-size:.78rem;font-weight:700;padding:2px 10px;border-radius:99px;background:var(--form);color:var(--accent);margin:6px 6px 0 0}
+.tag.soon{background:var(--warn);color:var(--warnb)}
+.back{display:inline-block;margin:18px 18px 0;max-width:860px;color:var(--accent);background:none;border:0;font:inherit;font-weight:600;cursor:pointer;padding:0}
+.backwrap{max-width:860px;margin:0 auto}
+.foot{text-align:center;color:var(--muted);font-size:.9rem;margin-top:30px}
 </style>
 </head>
 <body>
+<div class="view" id="view-home">
+<div class="home">
+<h1>📚 Rozwiązania sprawdzianów z fizyki</h1>
+<p class="sm">Wybierz sprawdzian, żeby zobaczyć pełne rozwiązania krok po kroku, ze wzorami w oznaczeniach CKE.</p>
+<div class="cards">
+<button class="card on" data-open="magnetyzm"><h2>🧲 Magnetyzm</h2><p>Siła Lorentza, siła elektrodynamiczna, cyklotron, pole przewodników.</p><span class="tag">Dostępny</span><span class="tag">pytania 1–5</span><span class="tag">zad. 6–8</span><span class="tag">22 p.</span></button>
+<div class="card off"><h2>Kolejne sprawdziany</h2><p>Następne sprawdziany pojawią się w przyszłości. Zajrzyj tu później.</p><span class="tag soon">Wkrótce</span></div>
+</div>
+<p class="foot">Dodam tu kolejne tematy, gdy będą gotowe.</p>
+</div>
+</div>
+<div class="view" id="view-magnetyzm" hidden>
+<div class="backwrap"><button class="back" data-open="home">← Wszystkie sprawdziany</button></div>
 <header>
-<h1>Magnetyzm – rozwiązania testu</h1>
-<p>Pytania 1–5 i zadania 6–8. Przyjęto \(g = 9{,}81\ \mathrm{m/s^2}\) (przy \(g=10\ \mathrm{m/s^2}\) zmieniają się tylko drobne wartości w zad. 6), \(q = 1{,}6\cdot10^{-19}\ \mathrm{C}\).</p>
+<h1>🧲 Magnetyzm – rozwiązania sprawdzianu</h1>
+<p>Pytania 1–5 i zadania 6–8. Wzory i oznaczenia jak na karcie wzorów CKE.</p>
 </header>
-<nav><a href="#p1">1</a><a href="#p2">2</a><a href="#p3">3</a><a href="#p4">4</a><a href="#p5">5</a><a href="#z6">Zad. 6</a><a href="#z7">Zad. 7</a><a href="#z8">Zad. 8</a></nav>
+<nav><div><a href="#sum">Odpowiedzi</a><a href="#wzory">Wzory</a><a href="#p1">1</a><a href="#p2">2</a><a href="#p3">3</a><a href="#p4">4</a><a href="#p5">5</a><a href="#z6">Zad. 6</a><a href="#z7">Zad. 7</a><a href="#z8">Zad. 8</a></div></nav>
 <main>
 
+<section id="sum"><h2>Szybkie odpowiedzi</h2>
+<table>
+<tr><th>Nr</th><th>Odpowiedź</th><th>Krótko</th></tr>
+<tr><td>1</td><td class="a">D</td><td>bieguny jednoimienne (N i N lub S i S)</td></tr>
+<tr><td>2</td><td class="a">C</td><td>siła Lorentza w górę kartki</td></tr>
+<tr><td>3</td><td class="a">B</td><td>paramagnetyk: lekki spadek, ferromagnetyk: duży wzrost</td></tr>
+<tr><td>4</td><td class="a">B i 1</td><td>pręt w prawo, prąd od „+” do „−”</td></tr>
+<tr><td>5</td><td class="a">C</td><td>z przodu S, z tyłu N</td></tr>
+<tr><td>6</td><td class="a">+0,02 N</td><td>naciąg nici rośnie o 0,02 N</td></tr>
+<tr><td>7</td><td class="a">6,6·10⁻⁸ s; 1,6·10⁻⁵ s</td><td>okres obiegu; czas ruchu protonu</td></tr>
+<tr><td>8</td><td class="a">2μ₀I/π, w górę</td><td>indukcja w środku między przewodnikami</td></tr>
+</table></section>
+
+<section id="wzory"><h2>Wzory i stałe użyte w zadaniach</h2>
+<div class="form"><b>Siła Lorentza</b>\[F = q\,v\,B\,\sin\alpha\]</div>
+<div class="form"><b>Siła elektrodynamiczna (przewodnik z prądem)</b>\[F = B\,I\,l\,\sin\alpha\]</div>
+<div class="form"><b>Indukcja pola prostoliniowego przewodnika</b>\[B=\frac{\mu_0 I}{2\pi r}\]</div>
+<div class="form"><b>Indukcja pola solenoidu</b>\[B=\mu_0\mu_r\,\frac{N}{l}\,I\]</div>
+<div class="form"><b>Ruch cząstki w polu magnetycznym (\(\vec v\perp\vec B\))</b>\[r=\frac{mv}{qB},\qquad T=\frac{2\pi m}{qB}\]</div>
+<div class="form"><b>Ciężar, energia kinetyczna, praca pola elektrycznego</b>\[Q=mg,\qquad E_k=\frac{mv^2}{2},\qquad W=qU\]</div>
+<p class="sm">Stałe: \(g=9{,}81\ \mathrm{m/s^2}\), \(e=1{,}602\cdot10^{-19}\ \mathrm C\), \(m_p=1{,}67\cdot10^{-27}\ \mathrm{kg}\) (z treści zadania), \(\mu_0=4\pi\cdot10^{-7}\ \mathrm{T\cdot m/A}\).</p>
+<div class="note">Przepisałem wzory w oznaczeniach CKE z pamięci, więc przed sprawdzianem zerknij na swoją kartę wzorów i upewnij się, że oznaczenia się zgadzają.</div>
+</section>
+
 <section id="p1"><h2>Pytanie 1 – magnesy sztabkowe</h2>
-<div class="ans">Odpowiedź: D (N i N lub S i S)</div>
-<p>Linie pola z obu magnesów nie łączą się, tylko rozchodzą na boki – magnesy się odpychają, więc naprzeciw siebie są bieguny <b>jednoimienne</b>. Opiłki nie pokazują zwrotu linii, dlatego „N i N lub S i S”.</p></section>
+<p>Linie pola z obu magnesów nie łączą się, tylko rozchodzą na boki. Magnesy się odpychają, więc naprzeciw siebie są bieguny <b>jednoimienne</b>. Opiłki nie pokazują zwrotu linii, dlatego „N i N lub S i S”.</p>
+<div class="ans">Odpowiedź: D</div></section>
 
 <section id="p2"><h2>Pytanie 2 – proton w polu \(\vec B\)</h2>
-<div class="ans">Odpowiedź: C (w górę kartki)</div>
-<p>Reguła lewej dłoni: linie \(\vec B\) (za kartkę) wchodzą w dłoń, palce wskazują \(\vec v\) (w prawo), kciuk pokazuje siłę – w górę.</p>
-\[\vec F = q\,\vec v\times\vec B\]</section>
+<div class="form"><b>Wzór</b>\[F = q\,v\,B\,\sin\alpha\]</div>
+<ol class="steps"><li>Proton ma ładunek dodatni, \(\vec v\) skierowana w prawo.</li>
+<li>\(\vec B\) skierowane za kartkę (⊗).</li>
+<li>Reguła lewej dłoni: linie \(\vec B\) wchodzą w dłoń, palce wzdłuż \(\vec v\), kciuk pokazuje siłę: <b>w górę</b>.</li></ol>
+<div class="ans">Odpowiedź: C (w górę kartki)</div></section>
 
 <section id="p3"><h2>Pytanie 3 – rdzeń w solenoidzie</h2>
-<div class="ans">Odpowiedź: B</div>
-\[B=\mu_0\mu_r\, n I\]
-<p>Paramagnetyk: \(\mu_r\) tylko nieco większe od 1, więc po wysunięciu indukcja nieznacznie maleje. Ferromagnetyk: \(\mu_r\) rzędu setek–tysięcy, więc po wsunięciu indukcja bardzo rośnie.</p></section>
+<div class="form"><b>Wzór</b>\[B=\mu_0\mu_r\,\frac{N}{l}\,I\]</div>
+<ol class="steps"><li>Paramagnetyk: \(\mu_r\) tylko trochę większe od 1. Po jego wysunięciu indukcja <b>nieznacznie maleje</b>.</li>
+<li>Ferromagnetyk: \(\mu_r\) rzędu setek–tysięcy. Po jego wsunięciu indukcja <b>bardzo rośnie</b>.</li></ol>
+<div class="ans">Odpowiedź: B</div></section>
 
 <section id="p4"><h2>Pytanie 4 – pręt na szynach</h2>
-<div class="ans">Pręt potoczy się: B (w prawo), prąd skierowany od „+” do „−” (1)</div>
-<ol><li>Prąd płynie w pręcie z góry na dół („+” na górnej szynie).</li>
+<div class="form"><b>Wzór</b>\[F = B\,I\,l\,\sin\alpha\]</div>
+<ol class="steps"><li>Prąd płynie od „+” (górna szyna) do „−” (dolna), czyli w pręcie <b>z góry na dół</b>.</li>
 <li>\(\vec B\) jest za kartkę (⊗).</li>
-<li>Reguła lewej dłoni: kciuk wskazuje w prawo.</li></ol>
-\[F = B I l\]</section>
+<li>Reguła lewej dłoni: linie \(\vec B\) wchodzą w dłoń, palce w dół, kciuk w prawo.</li></ol>
+<div class="ans">Pręt potoczy się: B (w prawo), prąd od „+” do „−” (1)</div></section>
 
 <section id="p5"><h2>Pytanie 5 – pętla z prądem</h2>
-<div class="ans">Odpowiedź: C (z przodu S, z tyłu N)</div>
-<p>Strzałka na dole pętli biegnie w lewo, czyli prąd płynie <b>zgodnie z ruchem wskazówek zegara</b> (patrząc od przodu). Reguła prawej dłoni: kciuk wskazuje za kartkę, więc tam jest biegun N, a z przodu S.</p></section>
+<ol class="steps"><li>Strzałka na dole pętli biegnie w lewo, więc prąd płynie <b>zgodnie z ruchem wskazówek zegara</b> (patrząc od przodu).</li>
+<li>Reguła prawej dłoni: palce zgięte po kierunku prądu, kciuk wskazuje biegun N, tu <b>za kartkę</b>.</li>
+<li>Z przodu jest więc biegun S, z tyłu N.</li></ol>
+<div class="ans">Odpowiedź: C (z przodu S, z tyłu N)</div></section>
 
 <section id="z6"><h2>Zadanie 6 – naciąg nici (3 p.)</h2>
-<p><b>Dane:</b> \(B=10^{-2}\ \mathrm T,\ l=1\ \mathrm m,\ m=0{,}1\ \mathrm{kg},\ I=2\ \mathrm A,\ g=9{,}81\ \mathrm{m/s^2}\).</p>
-<h3>Kierunek siły</h3>
-<p>Prąd płynie w prawo (od „+” do „−”), \(\vec B\) jest do nas (⊙). Reguła lewej dłoni: siła elektrodynamiczna działa <b>w dół</b>.</p>
-<h3>Wartość siły</h3>
-\[F = BIl = 10^{-2}\cdot 2\cdot 1 = 0{,}02\ \mathrm N\]
-<h3>Naciąg nici</h3>
-<p>Bez prądu:</p>
-\[2T_0 = mg = 0{,}1\cdot 9{,}81 = 0{,}981\ \mathrm N \;\Rightarrow\; T_0 \approx 0{,}49\ \mathrm N\]
-<p>Z prądem (siła \(F\) w dół, tak jak ciężar):</p>
-\[2T = mg + F = 0{,}981 + 0{,}02 = 1{,}001\ \mathrm N \;\Rightarrow\; T \approx 0{,}50\ \mathrm N\]
-<div class="ans">Naciąg wzrośnie łącznie o 0,02 N (o 0,01 N na każdą nić).</div>
-<p class="note">Wzrost nie zależy od \(g\): \(\Delta(2T)=F=0{,}02\ \mathrm N\). Przy \(g=10\ \mathrm{m/s^2}\) wychodzi \(T_0=0{,}5\ \mathrm N\) i \(T=0{,}51\ \mathrm N\).</p>
-<p class="note">Rysunek: przewodnik, \(\vec F_g\) w dół, \(\vec F_{el}\) w dół, dwa naciągi nici w górę, prąd w prawo.</p></section>
+<h3>Dane</h3>
+<p>\(B=10^{-2}\ \mathrm T,\quad l=1\ \mathrm m,\quad m=0{,}1\ \mathrm{kg},\quad I=2\ \mathrm A,\quad g=9{,}81\ \mathrm{m/s^2}\)</p>
+<h3>Wzory</h3>
+<div class="form">\[F = B\,I\,l\,\sin\alpha,\qquad Q=mg\]</div>
+<h3>Rozwiązanie</h3>
+<ol class="steps">
+<li><b>Kierunek siły.</b> Prąd płynie w prawo, \(\vec B\) do nas (⊙). Reguła lewej dłoni: siła elektrodynamiczna działa <b>w dół</b>.</li>
+<li><b>Wartość siły</b> (\(\alpha=90^\circ\)):
+\[F = BIl = 10^{-2}\cdot 2\cdot 1 = 0{,}02\ \mathrm N\]</li>
+<li><b>Bez prądu</b> dwie nici niosą ciężar przewodnika:
+\[2T_0 = mg = 0{,}1\cdot 9{,}81 = 0{,}981\ \mathrm N\ \Rightarrow\ T_0\approx 0{,}49\ \mathrm N\]</li>
+<li><b>Z prądem</b> siła \(F\) działa w dół razem z ciężarem:
+\[2T = mg + F = 0{,}981+0{,}02 = 1{,}001\ \mathrm N\ \Rightarrow\ T\approx 0{,}50\ \mathrm N\]</li>
+</ol>
+<div class="ans">Naciąg nici wzrośnie łącznie o 0,02 N (o 0,01 N na każdą nić).</div>
+<div class="note"><b>Rysunek:</b> przewodnik, \(\vec Q\) w dół, \(\vec F\) w dół, dwa naciągi nici w górę, strzałka prądu w prawo.<br>Wzrost nie zależy od \(g\). Przy \(g=10\ \mathrm{m/s^2}\) wychodzi \(T_0=0{,}5\ \mathrm N\) i \(T=0{,}51\ \mathrm N\).</div></section>
 
 <section id="z7"><h2>Zadanie 7 – cyklotron (11 p.)</h2>
-<h3>a) Tor ruchu</h3>
-<p>Spirala: w duantach półokręgi (tylko pole magnetyczne), po każdym przejściu przez szczelinę cząstka jest szybsza, więc promień rośnie. W szczelinie ruch prostoliniowy przyspieszony.</p>
-<h3>b) Rola pola elektrycznego</h3>
-<p>Pole elektryczne w szczelinie <b>przyspiesza</b> cząstki i zwiększa ich energię. Napięcie zmienia znak z okresem obiegu, więc zawsze działa zgodnie z ruchem. Pole magnetyczne energii nie zmienia, tylko zakrzywia tor.</p>
-<h3>c) Okres obiegu protonu</h3>
-<p>Siła Lorentza jest siłą dośrodkową:</p>
-\[qvB=\frac{mv^2}{r}\;\Rightarrow\; v=\frac{qBr}{m}\]
-\[T=\frac{2\pi r}{v}=\frac{2\pi m}{qB}=\frac{2\pi\cdot1{,}67\cdot10^{-27}}{1{,}6\cdot10^{-19}\cdot 1}\approx 6{,}6\cdot10^{-8}\ \mathrm s\]
-<p>Okres nie zależy od prędkości ani promienia.</p>
-<h3>d) Czas ruchu protonu</h3>
-<p>Energia końcowa (\(r=R_{max}=1\ \mathrm m\)):</p>
-\[E_k=\frac{(qBR)^2}{2m}=\frac{(1{,}6\cdot10^{-19})^2}{2\cdot1{,}67\cdot10^{-27}}\approx 7{,}7\cdot10^{-12}\ \mathrm J\]
-<p>Zysk energii na obieg (dwa przejścia przez szczelinę):</p>
-\[2qU = 2\cdot1{,}6\cdot10^{-19}\cdot10^{5}=3{,}2\cdot10^{-14}\ \mathrm J\]
-\[N=\frac{E_k}{2qU}\approx 240\]
-\[t = N\,T \approx 240\cdot 6{,}6\cdot10^{-8}\ \mathrm s\approx 1{,}6\cdot10^{-5}\ \mathrm s\]
-<div class="ans">t ≈ 1,6·10⁻⁵ s (czas w szczelinach pomijamy)</div></section>
+<h3>Dane</h3>
+<p>\(B=1\ \mathrm T,\quad R_{max}=1\ \mathrm m,\quad U=10^5\ \mathrm V,\quad m_p=1{,}67\cdot10^{-27}\ \mathrm{kg},\quad e=1{,}602\cdot10^{-19}\ \mathrm C\)</p>
+<h3>a) Tor ruchu (1 p.)</h3>
+<p>Cząstki poruszają się po <b>spirali</b>. W duantach (tylko pole magnetyczne) biegną po półokręgach, a po każdym przejściu przez szczelinę są szybsze, więc promień półokręgu rośnie. W szczelinie ruch jest prostoliniowy przyspieszony.</p>
+<h3>b) Rola pola elektrycznego (1 p.)</h3>
+<p>Pole elektryczne w szczelinie <b>przyspiesza</b> cząstki i zwiększa ich energię kinetyczną. Napięcie zmienia znak z okresem obiegu, więc zawsze działa zgodnie z kierunkiem ruchu. Pole magnetyczne energii nie zmienia, tylko zakrzywia tor.</p>
+<h3>c) Okres obiegu (4 p.)</h3>
+<div class="form"><b>Wzór</b>Siła Lorentza jest siłą dośrodkową: \[qvB=\frac{mv^2}{r}\ \Rightarrow\ T=\frac{2\pi r}{v}=\frac{2\pi m}{qB}\]</div>
+\[T=\frac{2\pi\cdot1{,}67\cdot10^{-27}}{1{,}602\cdot10^{-19}\cdot 1}\approx 6{,}6\cdot10^{-8}\ \mathrm s\]
+<div class="ans">T ≈ 6,6·10⁻⁸ s (nie zależy od prędkości ani promienia)</div>
+<h3>d) Czas ruchu protonu (5 p.)</h3>
+<ol class="steps">
+<li><b>Energia końcowa</b> (\(r=R_{max}\)), z \(v=\dfrac{qBR}{m}\):
+\[E_k=\frac{mv^2}{2}=\frac{(qBR)^2}{2m}=\frac{(1{,}602\cdot10^{-19})^2}{2\cdot1{,}67\cdot10^{-27}}\approx 7{,}7\cdot10^{-12}\ \mathrm J\]</li>
+<li><b>Zysk energii na obieg.</b> Jedno przejście przez szczelinę daje \(W=qU\), a jeden obieg to dwa przejścia:
+\[2qU=2\cdot1{,}602\cdot10^{-19}\cdot10^{5}\approx 3{,}2\cdot10^{-14}\ \mathrm J\]</li>
+<li><b>Liczba obiegów:</b>
+\[N=\frac{E_k}{2qU}=\frac{7{,}7\cdot10^{-12}}{3{,}2\cdot10^{-14}}\approx 240\]</li>
+<li><b>Czas ruchu:</b>
+\[t=N\,T\approx 240\cdot 6{,}6\cdot10^{-8}\ \mathrm s\approx 1{,}6\cdot10^{-5}\ \mathrm s\]</li>
+</ol>
+<div class="ans">t ≈ 1,6·10⁻⁵ s (czas lotu w szczelinach pomijamy)</div></section>
 
 <section id="z8"><h2>Zadanie 8 – dwa przewodniki (3 p.)</h2>
+<h3>Wzór</h3>
+<div class="form"><b>Indukcja pola prostoliniowego przewodnika</b>\[B=\frac{\mu_0 I}{2\pi r}\]</div>
+<p class="sm">Wyprowadzenie z prawa Ampère’a dla okręgu o promieniu \(r\): \(B\cdot 2\pi r=\mu_0 I\).</p>
 <h3>Rysunek i kierunki</h3>
 <p>Dwa przewodniki w odległości 1 m: lewy z prądem ku nam (⊙), prawy od nas (⊗). Punkt P leży na środku, 0,5 m od każdego.</p>
-<ul><li>Lewy (⊙): linie \(\vec B\) przeciwnie do wskazówek zegara, w P wektor \(\vec B_1\) jest skierowany <b>w górę</b>.</li>
-<li>Prawy (⊗): linie \(\vec B\) zgodnie ze wskazówkami zegara, w P wektor \(\vec B_2\) też jest skierowany <b>w górę</b>.</li></ul>
-<p>Zwroty są zgodne, więc wektory się dodają. W P rysujesz jedną strzałkę \(\vec B\) w górę.</p>
-<h3>Wyprowadzenie wzoru</h3>
-<p>Prawo Ampère’a dla okręgu o promieniu \(r\) wokół przewodnika:</p>
-\[B\cdot 2\pi r=\mu_0 I \;\Rightarrow\; B=\frac{\mu_0 I}{2\pi r}\]
-<h3>Indukcja w punkcie P (\(r=0{,}5\ \mathrm m\))</h3>
+<ol class="steps">
+<li>Lewy (⊙): linie \(\vec B\) idą przeciwnie do wskazówek zegara, więc w P wektor \(\vec B_1\) jest skierowany <b>w górę</b>.</li>
+<li>Prawy (⊗): linie \(\vec B\) idą zgodnie ze wskazówkami zegara, więc w P wektor \(\vec B_2\) też jest skierowany <b>w górę</b>.</li>
+<li>Zwroty są zgodne, więc wektory się dodają. W P rysujesz jedną strzałkę \(\vec B\) w górę.</li></ol>
+<h3>Obliczenia (\(r=0{,}5\ \mathrm m\))</h3>
 \[B_1=B_2=\frac{\mu_0 I}{2\pi\cdot0{,}5}=\frac{\mu_0 I}{\pi}\]
 \[B=B_1+B_2=\frac{2\mu_0 I}{\pi}\]
 <div class="ans">B = 2μ₀I / π, skierowana w górę</div></section>
 
 <section><h2>Ile punktów potrzeba?</h2>
-<p>Test: 22 p. Próg 30% to 6,6 p., czyli <b>7 punktów</b>. Samo 5 zamkniętych + zad. 6 daje 8 p.</p></section>
+<p>Test ma 22 p. Próg 30% to 6,6 p., czyli <b>7 punktów</b>. Same pytania zamknięte i zad. 6 dają 8 p.</p></section>
 
 </main>
+</div>
+<script>
+function show(v){document.getElementById("view-home").hidden=v!=="home";document.getElementById("view-magnetyzm").hidden=v!=="magnetyzm";window.scrollTo(0,0);}
+document.querySelectorAll("[data-open]").forEach(function(b){b.addEventListener("click",function(){show(b.getAttribute("data-open"));});});
+document.querySelectorAll("nav a").forEach(function(a){a.addEventListener("click",function(e){e.preventDefault();var t=document.getElementById(a.getAttribute("href").slice(1));if(t)t.scrollIntoView({behavior:"smooth"});});});
+if(location.hash==="#magnetyzm")show("magnetyzm");
+</script>
 </body>
 </html>
