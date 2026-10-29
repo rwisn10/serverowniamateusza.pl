@@ -1,37 +1,16 @@
-<!DOCTYPE html><html lang="pl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Piosenki — Mateusz Talar</title><meta name="description" content="Piosenki kampanii Mateusza Talara."><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,800;1,9..144,600&family=Manrope:wght@400;600;800&display=swap" rel="stylesheet"><link rel="icon" href="logo.png"><link rel="stylesheet" href="style.css">
-<style>
-  .song-card audio{width:100%;margin:12px 0 6px}
-  .song-card h3{margin:0 0 4px}
-  .song-card p{margin:0 0 6px}
-  .song-card a.dl{font-weight:700}
-  #songGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px}
-</style></head><body><div id="nav"></div><header class="page-head"><div class="wrap"><span class="pill">Muzyka</span><h1>Piosenki</h1><p>Posłuchaj piosenek z naszej kampanii.</p></div></header>
-<section><div class="wrap">
-  <div id="songGrid">
-    <div class="card song-card">
-      <h3>Ręce do pracy</h3>
-      <p>Oficjalny hymn kampanii.</p>
-      <audio controls preload="none" src="hymn-rece-do-pracy.mp3"></audio>
-      <a class="dl" href="hymn-rece-do-pracy.mp3" download>Pobierz</a>
-    </div>
-  </div>
-  <p id="songStatus" style="margin-top:18px;font-weight:600"></p>
-</div></section>
-<div id="foot"></div><script src="script.js"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script><script src="supabase-config.js"></script><script>
-(function(){
-  var grid = document.getElementById('songGrid'), status = document.getElementById('songStatus');
-  if(!(window.supabase && window.SB_URL)) return;
-  var sb = window.supabase.createClient(window.SB_URL, window.SB_KEY);
-  sb.from('songs').select('*').order('created_at', { ascending:false }).then(function(r){
-    if(r.error){ return; }   // brak tabeli / błąd sieci: zostaje sam hymn
-    (r.data || []).forEach(function(s){
-      var card = document.createElement('div'); card.className = 'card song-card';
-      var h = document.createElement('h3'); h.textContent = s.title; card.appendChild(h);
-      if(s.description){ var p = document.createElement('p'); p.textContent = s.description; card.appendChild(p); }
-      var a = document.createElement('audio'); a.controls = true; a.preload = 'none'; a.src = s.audio_url; card.appendChild(a);
-      var dl = document.createElement('a'); dl.className = 'dl'; dl.href = s.audio_url; dl.target = '_blank'; dl.rel = 'noopener'; dl.textContent = 'Pobierz'; card.appendChild(dl);
-      grid.appendChild(card);
-    });
-  });
-})();
+<!DOCTYPE html><html lang="pl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Piosenki — Mateusz Talar</title><meta name="description" content="Piosenki kampanii Mateusza Talara: hymn Ręce do pracy i wersja z podkładem do karaoke."><link rel="icon" href="logo.png"><link rel="stylesheet" href="style.css"></head><body><div id="nav"></div><main>
+<header class="page-head"><div class="wrap"><span class="pill">Muzyka kampanii</span><h1>Piosenki</h1><p>Posłuchaj hymnu, włącz wersję z podkładem i zaśpiewaj razem z tekstem na ekranie.</p></div></header>
+<section style="padding-top:50px"><div class="wrap"><div id="player"></div>
+<span class="eyebrow">Tekst</span><h2>Ręce do pracy</h2><p style="color:var(--dim);max-width:720px">Tekst podświetla się takt po takcie w wersji z podkładem. Kliknij dowolną linijkę, a odtwarzacz przeskoczy w to miejsce.</p><div class="lyrics" id="lyr"></div></div></section>
+</main><div id="foot"></div><script src="script.js"></script><script>
+/* PIOSENKI: dopisz kolejny utwór w tej liście: src, title, artist, dur (sekundy), opcjonalnie bpm (karaoke) */
+const TRACKS=[{src:'hymn.mp3',title:'Ręce do pracy',artist:'Mateusz Talar · oficjalny hymn kampanii',dur:231,file:'Ręce do pracy - hymn kampanii.mp3'},{src:'hymn-podklad.m4a',title:'Ręce do pracy (podkład z karaoke)',artist:'Wersja instrumentalna · 90 BPM',dur:173,bpm:90,file:'Ręce do pracy - podkład.m4a'}];
+const SEC=[["Zwrotka 1", 2, ["Wychowany w górniczym domu, znam, co znaczy pot i trud,", "dlatego nie obiecuję bajek, tylko plan i każdy krok, nie cud.", "Osiemnaście lat w terenie, od placu zabaw, krok po kroku,", "ludzie wiedzą, że nie znikam po wyborach, nie w ostatnim roku.", "Sześć gmin, jeden powiat, a każda ma swój głos,", "ja zbieram je wszystkie, bo wspólnie zmieniamy los.", "Dla rodziny na swoim, dom, gdzie dzieci mają pokój,", "żeby młodzi nie wyjeżdżali, żeby w domu był spokój.", "Żłobek, szkoła, dojazd, praca w zawodzie z przyszłością,", "bo regionu nie buduje się obietnicą, tylko gotowością.", "Szpital zostaje, lekarz blisko, kolejka krótsza,", "a seniorom transport, żeby droga nie była dłuższa.", "Drogi bez dziur, internet, autobus, co naprawdę przyjeżdża,", "bo wieś nie jest gorsza, tylko dłużej do niej się dojeżdża.", "To mój plan na sto dni, bez cukru, bez waty,", "po stu dniach raport, i dotrzymam każdej daty."]], ["Refren", 18, ["Praca, rodzina, bezpieczeństwo — to jest nasz hymn,", "sześć gmin, jeden powiat, jeden wspólny rym.", "Łęczna, Cyców, Ludwin, Spiczyn, Puchaczów, Milejów,", "nikt tu nie jest sam, bo wszyscy z jednych domów.", "Talar! Talar! — niech usłyszy cały świat,", "że tu warto żyć, pracować i zostać, jak od lat.", "Ręce do pracy, serca do wspólnoty,", "kto chce zmieniać region, ten ma z nami wspólne roboty."]], ["Zwrotka 2", 26, ["Obiecuję, że doba ma dwadzieścia cztery godziny,", "to gwarancja dla każdej pracującej rodziny.", "Dzień się zaczyna wraz ze wschodem słońca,", "negocjacje trwają, ale idziemy do końca.", "W jaskiniach będzie ciemno, zgodnie z normą,", "ciemność zostaje w tej samej, sprawdzonej formie.", "Drzewa zapylają naturalnie pszczoły,", "a my im nie przeszkadzamy, niech lecą wesoły.", "Koniec z mlekiem z Biedronki, będzie mleko od krowy,", "w szkołach nabiał lokalny, zdrowy i gotowy.", "Nie rzucimy ziemi, skąd nasz ród,", "chronimy pola i każdy mały ogród.", "Niebezpiecznie wierzyć, że coś trwa wiecznie,", "więc ten program ma termin i rozliczymy go uczciwie, bezpiecznie.", "Telefon w urzędzie odebrany przed czwartym dzwonkiem,", "a ławka na przystanku, żeby nikt nie stał z torbą i wózkiem."]], ["Refren", 42, ["Praca, rodzina, bezpieczeństwo — to jest nasz hymn,", "sześć gmin, jeden powiat, jeden wspólny rym.", "Łęczna, Cyców, Ludwin, Spiczyn, Puchaczów, Milejów,", "nikt tu nie jest sam, bo wszyscy z jednych domów.", "Talar! Talar! — niech usłyszy cały świat,", "że tu warto żyć, pracować i zostać, jak od lat.", "Ręce do pracy, serca do wspólnoty,", "kto chce zmieniać region, ten ma z nami wspólne roboty."]], ["Most", 50, ["Nie obiecuję wszystkiego i nie obiecuję na wieki,", "obiecuję słuchać, liczyć i dawać odpowiedzi, bez ucieczki.", "Jeśli się potknę — przyznam, jeśli zrobię — pokażę,", "zaufanie to nie reklama, tylko praca, którą wam okażę."]], ["Refren", 54, ["Praca, rodzina, bezpieczeństwo — to jest nasz hymn,", "sześć gmin, jeden powiat, jeden wspólny rym.", "Łęczna, Cyców, Ludwin, Spiczyn, Puchaczów, Milejów,", "nikt tu nie jest sam, bo wszyscy z jednych domów.", "Talar! Talar! — niech usłyszy cały świat,", "że tu warto żyć, pracować i zostać, jak od lat.", "Ręce do pracy, serca do wspólnoty,", "kto chce zmieniać region, ten ma z nami wspólne roboty."]]],BAR=60/90*4;
+const P=makePlayer(document.getElementById('player'),TRACKS);
+const lyr=document.getElementById('lyr');
+lyr.innerHTML='<div class="sec">Intro · 2 takty</div>'+SEC.map(([n,s,l])=>`<div class="sec">${n}</div>`+l.map((t,i)=>`<div class="ln" data-b="${s+i}">${t}</div>`).join('')).join('')+'<div class="sec">Outro</div><div class="ln" data-b="62">Mateusz Talar — razem.</div>';
+const els=[...lyr.querySelectorAll('.ln')];let cb=-1;
+function hl(){const kar=TRACKS[P.i].bpm;const b=kar?Math.floor(P.a.currentTime/BAR):-99;if(b!==cb){cb=b;els.forEach(e=>{const eb=+e.dataset.b;e.classList.toggle('on',eb===b);e.classList.toggle('past',kar&&eb<b)});const a=lyr.querySelector('.ln.on');if(a&&!P.a.paused)a.scrollIntoView({block:'center',behavior:'smooth'})}}
+P.a.addEventListener('timeupdate',hl);P.a.addEventListener('seeked',hl);P.host.addEventListener('track',()=>{cb=-1;hl()});
+els.forEach(e=>e.onclick=()=>{const k=TRACKS.findIndex(t=>t.bpm);if(P.i!==k)P.load(k,false);P.a.currentTime=+e.dataset.b*BAR;P.a.play()});
 </script></body></html>
