@@ -1,7 +1,7 @@
 /* PRZERWA TECHNICZNA: true = wszystkie strony pokazują przerwa.html; false = strona działa normalnie */
 const MAINTENANCE=false;
 if(MAINTENANCE&&!/przerwa\.html$/.test(location.pathname)){document.documentElement.style.visibility='hidden';location.replace('przerwa.html');}
-const PAGES=[['index.html','Start'],['o-mnie.html','O mnie'],['poglady.html','Poglądy'],['program.html','Program'],['obietnice.html','Obietnice'],['dzialania.html','Działania'],['artykuly.html','Artykuły'],['aktualnosci.html','Aktualności'],['memy.html','Memy'],['kontakt.html','Kontakt']];
+const PAGES=[['index.html','Start'],['o-mnie.html','O mnie'],['poglady.html','Poglądy'],['program.html','Program'],['obietnice.html','Obietnice'],['dzialania.html','Działania'],['artykuly.html','Artykuły'],['aktualnosci.html','Aktualności'],['piosenki.html','Piosenki'],['memy.html','Memy'],['kontakt.html','Kontakt']];
 let cur=location.pathname.split('/').pop()||'index.html';if(cur==='artykul.html')cur='artykuly.html';
 /* SPOTKANIA: edytuj tylko tę listę. Minione terminy znikają same. [data RRRR-MM-DD, godzina, miejsce, temat] */
 const MEETS=[
@@ -34,17 +34,46 @@ addEventListener('scroll',()=>{pr.style.setProperty('--w',(scrollY/Math.max(1,do
 addEventListener('DOMContentLoaded',()=>{const b=document.getElementById('body');if(!b)return;const hs=[...b.querySelectorAll('h3')];if(hs.length<3)return;
  hs.forEach((h,i)=>h.id='s'+(i+1));b.querySelector('p').insertAdjacentHTML('afterend','<nav class="toc"><b>W tym tekście</b><ol>'+hs.map(h=>`<li><a href="#${h.id}">${h.textContent}</a></li>`).join('')+'</ol></nav>')});
 
-/* efekty: kursor, szklane karty, tilt */
-const gl=document.createElement('div');gl.className='glow';document.body.appendChild(gl);
-document.addEventListener('mousemove',e=>{gl.style.transform=`translate(${e.clientX}px,${e.clientY}px)`;
- document.querySelectorAll('.card').forEach(c=>{const r=c.getBoundingClientRect();if(r.bottom<0||r.top>innerHeight)return;c.style.setProperty('--mx',(e.clientX-r.left)+'px');c.style.setProperty('--my',(e.clientY-r.top)+'px')})});
+/* efekty: tilt */
 document.querySelectorAll('[data-tilt]').forEach(el=>{el.addEventListener('mousemove',e=>{const r=el.getBoundingClientRect(),x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;el.style.transform=`perspective(900px) rotateY(${x*18}deg) rotateX(${-y*18}deg)`});el.addEventListener('mouseleave',()=>el.style.transform='')});
 
 /* motywy kolorystyczne */
-const TH=[['ogien','#ff2d4d,#ffc857','Ogień'],['granat','#4f8cff,#ffd166','Granat i złoto'],['las','#3ddc84,#ffc857','Las i pszczoły'],['polska','#ff3355,#ffffff','Biało-czerwony']];
+const TH=[['ogien','#14213d,#c8102e','Granat i czerwień'],['granat','#0b1f4d,#1d4ed8','Niebieski'],['las','#0f3d2a,#15803d','Zieleń'],['polska','#5b0b1b,#dc143c','Karmin']];
 let th='ogien';try{th=localStorage.getItem('theme')||'ogien'}catch(e){}
 const setTh=t=>{th=t;document.documentElement.dataset.theme=t;try{localStorage.setItem('theme',t)}catch(e){}document.querySelectorAll('.themes button').forEach(b=>b.classList.toggle('on',b.dataset.t===t))};
 const tb=document.createElement('div');tb.className='themes';tb.innerHTML=TH.map(([k,g,n])=>`<button data-t="${k}" title="${n}" aria-label="Motyw: ${n}" style="--d:linear-gradient(135deg,${g})"></button>`).join('');document.body.appendChild(tb);
 tb.querySelectorAll('button').forEach(b=>b.onclick=()=>setTh(b.dataset.t));setTh(th);
 /* pszczoły */
-document.querySelectorAll('.hero,.page-head.bees').forEach(h=>{for(let i=0;i<7;i++){const b=document.createElement('span');b.className='bee';b.textContent='🐝';b.style.cssText=`top:${12+Math.random()*70}%;font-size:${1+Math.random()*1.1}rem;--t:${14+Math.random()*14}s;--dl:${-Math.random()*20}s`;h.appendChild(b)}});
+document.querySelectorAll('.hero,.page-head.bees').forEach(h=>{for(let i=0;i<5;i++){const b=document.createElement('span');b.className='bee';b.textContent='🐝';b.style.cssText=`top:${12+Math.random()*70}%;font-size:${1+Math.random()*1.1}rem;--t:${14+Math.random()*14}s;--dl:${-Math.random()*20}s`;h.appendChild(b)}});
+
+/* ODTWARZACZ */
+const PLS=[];
+function fmt(t){t=Math.max(0,Math.floor(t||0));return Math.floor(t/60)+':'+String(t%60).padStart(2,'0')}
+function makePlayer(host,tracks,opt={}){
+ const I={play:'<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>',pause:'<svg viewBox="0 0 24 24"><path d="M6 5h4v14H6zm8 0h4v14h-4z"/></svg>',prev:'<svg viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6 8.5 6V6z"/></svg>',next:'<svg viewBox="0 0 24 24"><path d="M16 6h2v12h-2zM6 18l8.5-6L6 6z"/></svg>',vol:'<svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 4V5L7 9z"/><path d="M16 8.5a5 5 0 0 1 0 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>'};
+ host.className='pl'+(tracks.length<2?' one':'')+(opt.mini?' mini':'');
+ host.innerHTML=`<div class="pl-cover"><img src="logo.png" alt=""><div class="pl-eq"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div><div class="pl-main"><span class="pl-k">Teraz gra</span><h3 class="pl-title"></h3><p class="pl-art"></p><div class="pl-seek"><span class="pl-cur">0:00</span><input class="pl-range" type="range" min="0" max="1000" value="0" aria-label="Postęp"><span class="pl-dur">0:00</span></div><div class="pl-ctrl"><button class="pl-btn pl-prev" aria-label="Poprzednia">${I.prev}</button><button class="pl-btn pl-play" aria-label="Odtwórz">${I.play}</button><button class="pl-btn pl-next" aria-label="Następna">${I.next}</button><div class="pl-vol">${I.vol}<input type="range" min="0" max="100" value="90" aria-label="Głośność"></div><a class="pl-dl" download>Pobierz</a></div><ol class="pl-list">${tracks.map((t,i)=>`<li data-i="${i}"><span class="pl-n">${i+1}</span><span class="pl-t">${t.title}<small>${t.artist||''}</small></span><span class="pl-d">${fmt(t.dur)}</span></li>`).join('')}</ol></div>`;
+ const q=s=>host.querySelector(s),a=new Audio(),rg=q('.pl-range'),vg=q('.pl-vol input'),pb=q('.pl-play');let i=0;a.preload='metadata';
+ const setP=(el,v)=>el.style.setProperty('--p',v+'%');
+ function load(n,go){i=(n+tracks.length)%tracks.length;const t=tracks[i];a.src=t.src;q('.pl-title').textContent=t.title;q('.pl-art').textContent=t.artist||'';q('.pl-dur').textContent=fmt(t.dur);q('.pl-cur').textContent='0:00';rg.value=0;setP(rg,0);const dl=q('.pl-dl');dl.href=t.src;dl.setAttribute('download',t.file||t.src);
+  host.querySelectorAll('.pl-list li').forEach(li=>li.classList.toggle('on',+li.dataset.i===i));host.dispatchEvent(new CustomEvent('track',{detail:i}));
+  if('mediaSession' in navigator)navigator.mediaSession.metadata=new MediaMetadata({title:t.title,artist:t.artist||'Mateusz Talar'});
+  if(go)a.play().catch(()=>{})}
+ pb.onclick=()=>a.paused?a.play():a.pause();
+ q('.pl-prev').onclick=()=>a.currentTime>3?a.currentTime=0:load(i-1,!a.paused);q('.pl-next').onclick=()=>load(i+1,!a.paused);
+ a.addEventListener('play',()=>{host.classList.add('go');pb.innerHTML=I.pause;pb.setAttribute('aria-label','Pauza');PLS.forEach(o=>{if(o!==a)o.pause()})});
+ a.addEventListener('pause',()=>{host.classList.remove('go');pb.innerHTML=I.play;pb.setAttribute('aria-label','Odtwórz')});
+ a.addEventListener('timeupdate',()=>{const d=a.duration||tracks[i].dur||1,p=a.currentTime/d*100;if(!rg.dragging){rg.value=p*10;setP(rg,p)}q('.pl-cur').textContent=fmt(a.currentTime)});
+ a.addEventListener('loadedmetadata',()=>{q('.pl-dur').textContent=fmt(a.duration)});
+ a.addEventListener('ended',()=>{if(tracks.length>1&&i<tracks.length-1)load(i+1,true);else{a.currentTime=0}});
+ rg.addEventListener('input',()=>{rg.dragging=true;const d=a.duration||tracks[i].dur;a.currentTime=rg.value/1000*d;setP(rg,rg.value/10);q('.pl-cur').textContent=fmt(a.currentTime)});rg.addEventListener('change',()=>rg.dragging=false);
+ vg.addEventListener('input',()=>{a.volume=vg.value/100;setP(vg,vg.value)});a.volume=.9;setP(vg,90);
+ host.querySelectorAll('.pl-list li').forEach(li=>li.onclick=()=>load(+li.dataset.i,true));
+ if('mediaSession' in navigator){navigator.mediaSession.setActionHandler('play',()=>a.play());navigator.mediaSession.setActionHandler('pause',()=>a.pause());navigator.mediaSession.setActionHandler('previoustrack',()=>load(i-1,true));navigator.mediaSession.setActionHandler('nexttrack',()=>load(i+1,true))}
+ PLS.push(a);load(0,false);return{a,load,host,get i(){return i}}}
+
+/* panel dostępności: rozmiar tekstu i wysoki kontrast */
+let fs=0,hc=false;try{fs=+localStorage.getItem('fs')||0;hc=localStorage.getItem('hc')==='1'}catch(e){}
+const root=document.documentElement,ap=document.createElement('div');ap.className='a11y';ap.innerHTML='<button id="fsm" aria-label="Zmniejsz tekst" title="Mniejszy tekst">A−</button><button id="fsp" aria-label="Powiększ tekst" title="Większy tekst">A+</button><button id="hcb" aria-label="Wysoki kontrast" title="Wysoki kontrast">◐</button>';document.body.appendChild(ap);
+const applyA=()=>{root.classList.remove('fs1','fs2','fs3');if(fs>0)root.classList.add('fs'+fs);root.classList.toggle('hc',hc);document.getElementById('hcb').classList.toggle('on',hc);try{localStorage.setItem('fs',fs);localStorage.setItem('hc',hc?'1':'0')}catch(e){}};
+document.getElementById('fsm').onclick=()=>{fs=Math.max(0,fs-1);applyA()};document.getElementById('fsp').onclick=()=>{fs=Math.min(3,fs+1);applyA()};document.getElementById('hcb').onclick=()=>{hc=!hc;applyA()};applyA();

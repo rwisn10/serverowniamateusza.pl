@@ -5,11 +5,11 @@
  <h1><span class="l"><span>Mateusz</span></span><span class="l"><span class="gr">Talar</span></span></h1>
  <div class="slogan"><b>Praca</b><b>Rodzina</b><b>Bezpieczeństwo</b></div>
  <p class="deck">Samorządowiec i działacz społeczny, od osiemnastu lat pracuje z mieszkańcami. Czterdzieści konkretnych propozycji: od szpitala powiatowego i mieszkań dla młodych po drogi, szkoły i wsparcie dla rolników.</p>
- <p class="actions"><a class="btn red" href="program.html">Czytaj program</a><a class="btn" href="kontakt.html">Dołącz do sztabu</a></p></div>
+ <p class="actions"><a class="btn red" href="program.html">Czytaj program</a><a class="btn" href="kontakt.html">Dołącz do sztabu</a><a class="btn" href="piosenki.html">🎵 Posłuchaj hymnu</a></p></div>
  <div class="orb" data-tilt><img src="logo.png" alt="Herb Mateusza Talara"><span class="chip c1"><b>18</b>lat pracy</span><span class="chip c2"><b>40</b>punktów programu</span><span class="chip c3"><b>6</b>gmin na trasie</span></div>
 </div></section>
 <div class="marquee"><div>PRACA<i>✦</i>RODZINA<i>✦</i>BEZPIECZEŃSTWO<i>✦</i>ŁĘCZNA<i>✦</i>CYCÓW<i>✦</i>LUDWIN<i>✦</i>SPICZYN<i>✦</i>PUCHACZÓW<i>✦</i>MILEJÓW<i>✦</i>PRACA<i>✦</i>RODZINA<i>✦</i>BEZPIECZEŃSTWO<i>✦</i>ŁĘCZNA<i>✦</i>CYCÓW<i>✦</i>LUDWIN<i>✦</i>SPICZYN<i>✦</i>PUCHACZÓW<i>✦</i>MILEJÓW<i>✦</i></div></div>
-<section style="padding:70px 0 20px"><div class="wrap"><div class="anthem-card reveal" id="anthem"><button class="anthem-play" id="aplay" aria-label="Odtwórz hymn">▶</button><div class="anthem-body"><span class="eyebrow">Oficjalny hymn kampanii</span><h2>Ręce do pracy</h2><p class="sub">Hymn Mateusza Talara. Włącz i posłuchaj.</p><div class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="anthem-bar"><span id="acur">0:00</span><div class="anthem-track" id="atrack"><span id="afill"></span></div><span id="adur">0:00</span></div><a class="anthem-dl" href="hymn-rece-do-pracy.mp3" download="Ręce do pracy - hymn Mateusza Talara.mp3">Pobierz hymn</a><audio id="aud" src="hymn-rece-do-pracy.mp3" preload="metadata"></audio></div></div></div></section>
+<section id="hymn" style="padding:70px 0 10px"><div class="wrap"><span class="eyebrow">Hymn kampanii</span><div id="homeplayer"></div><p style="margin-top:22px"><a class="btn red" href="piosenki.html">🎵 Przejdź do zakładki Piosenki: tekst i karaoke</a></p></div></section>
 <section><div class="wrap"><div class="nums"><div class="stat reveal"><b data-to="18">0</b><span>lat pracy społecznej</span></div><div class="stat reveal d1"><b data-to="42">0</b><span>inicjatyw lokalnych</span></div><div class="stat reveal d2"><b data-to="6">0</b><span>gmin na trasie</span></div><div class="stat reveal d3"><b data-to="40">0</b><span>punktów programu</span></div></div></div></section>
 <section style="padding-top:0"><div class="wrap"><span class="eyebrow">Kalendarz</span><h2>Spotkajmy się</h2><div class="scroller" data-meets="cards"></div><p style="margin-top:10px"><a class="btn" href="aktualnosci.html">Cały kalendarz</a></p></div></section>
 <section style="padding-top:0"><div class="wrap"><span class="eyebrow">Relacje</span><h2>Z ostatnich spotkań</h2><div class="grid g2"><a class="card reveal" href="artykul.html?id=112"><span class="tag">14 października · Łęczna</span><h3>Spotkanie o zdrowiu i szpitalu powiatowym</h3><p>Kadra medyczna, kolejki, telemedycyna, seniorzy i ratownictwo. Co omówiono i co wejdzie do programu.</p></a><a class="card reveal" href="artykul.html?id=113"><span class="tag">9 października · Lublin</span><h3>Młodzi, szkoła i praca w ZSE im. A. i J. Vetterów</h3><p>Praktyki, przedsiębiorczość, finanse osobiste i powroty do regionu. Co omówiono ze społecznością szkoły.</p></a></div></div></section>
@@ -21,12 +21,5 @@
 </main><div id="foot"></div><script src="script.js"></script><script src="articles-data.js"></script><script>
 const w=a=>(a.l+' '+a.b).split(' ').length;
 document.getElementById('featured').innerHTML=ARTICLES.filter(a=>a.c!=='Relacja').sort((a,b)=>w(b)-w(a)).slice(0,3).map(a=>`<a class="card" href="artykul.html?id=${a.id}"><span class="tag">${a.c} · ok. ${Math.round(w(a)/180)} min</span><h3>${a.t}</h3><p>${a.l}</p></a>`).join('');
-
-const au=document.getElementById('aud'),ab=document.getElementById('aplay'),ac=document.getElementById('anthem'),fm=t=>isFinite(t)?Math.floor(t/60)+':'+String(Math.floor(t%60)).padStart(2,'0'):'0:00';
-ab.onclick=()=>au.paused?au.play():au.pause();
-au.onplay=()=>{ac.classList.add('playing');ab.textContent='❚❚';ab.setAttribute('aria-label','Pauza')};
-au.onpause=au.onended=()=>{ac.classList.remove('playing');ab.textContent='▶';ab.setAttribute('aria-label','Odtwórz hymn')};
-au.onloadedmetadata=()=>document.getElementById('adur').textContent=fm(au.duration);
-au.ontimeupdate=()=>{document.getElementById('acur').textContent=fm(au.currentTime);document.getElementById('afill').style.width=(au.currentTime/(au.duration||1)*100)+'%'};
-document.getElementById('atrack').onclick=e=>{const r=e.currentTarget.getBoundingClientRect();if(au.duration)au.currentTime=(e.clientX-r.left)/r.width*au.duration};
+makePlayer(document.getElementById('homeplayer'),[{src:'hymn.mp3',title:'Ręce do pracy',artist:'Mateusz Talar · oficjalny hymn kampanii',dur:231,file:'Ręce do pracy - hymn kampanii.mp3'}],{mini:true});
 </script></body></html>
