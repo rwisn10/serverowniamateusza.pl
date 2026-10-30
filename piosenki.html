@@ -1,37 +1,97 @@
-<!DOCTYPE html><html lang="pl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Piosenki — Mateusz Talar</title><meta name="description" content="Piosenki kampanii Mateusza Talara."><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,800;1,9..144,600&family=Manrope:wght@400;600;800&display=swap" rel="stylesheet"><link rel="icon" href="logo.png"><link rel="stylesheet" href="style.css">
+<!DOCTYPE html><html lang="pl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Piosenki — Mateusz Talar</title><meta name="description" content="Piosenki kampanii Mateusza Talara."><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Lexend:wght@500;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"><link rel="icon" href="logo.png"><link rel="stylesheet" href="style.css">
 <style>
-  .song-card audio{width:100%;margin:12px 0 6px}
-  .song-card h3{margin:0 0 4px}
-  .song-card p{margin:0 0 6px}
-  .song-card a.dl{font-weight:700}
-  #songGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px}
+/* ODTWARZACZ PIOSENEK (samowystarczalny: działa z każdą wersją style.css) */
+.sp{--n:var(--navy,#14213d);--ac:var(--a,#c8102e);--ad:var(--ad,#a30d25);--so:var(--soft,#fde8ec);--li:var(--line,#e3ddcf);--mu:#3b455a;display:grid;grid-template-columns:260px 1fr;gap:34px;background:#fff;border:1px solid var(--li);border-radius:28px;padding:32px;box-shadow:0 24px 60px -30px rgba(20,33,61,.4);font-family:'Inter',Arial,sans-serif;color:var(--n)}
+.sp *{box-sizing:border-box}
+.sp-cover{position:relative;aspect-ratio:1;border-radius:22px;overflow:hidden;background:linear-gradient(150deg,var(--n),var(--ac));display:grid;place-items:center;align-self:start}
+.sp-cover img{width:54%;filter:drop-shadow(0 14px 24px rgba(0,0,0,.45));transition:transform .4s}.sp.go .sp-cover img{animation:spf 5s ease-in-out infinite}@keyframes spf{50%{transform:translateY(-8px) scale(1.04)}}
+.sp-eq{position:absolute;left:16px;right:16px;bottom:14px;height:44px;display:flex;gap:5px;align-items:flex-end;justify-content:center}.sp-eq i{width:9px;height:6px;border-radius:4px;background:rgba(255,255,255,.85)}
+.sp.go .sp-eq i{animation:speq .8s ease-in-out infinite alternate}.sp.go .sp-eq i:nth-child(2){animation-delay:-.25s}.sp.go .sp-eq i:nth-child(3){animation-delay:-.5s}.sp.go .sp-eq i:nth-child(4){animation-delay:-.15s}.sp.go .sp-eq i:nth-child(5){animation-delay:-.65s}.sp.go .sp-eq i:nth-child(6){animation-delay:-.35s}.sp.go .sp-eq i:nth-child(7){animation-delay:-.55s}@keyframes speq{to{height:42px}}
+.sp-k{font-size:.8rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--ad)}
+.sp-title{font-family:'Lexend',Arial,sans-serif;font-weight:700;font-size:clamp(1.6rem,3vw,2.3rem);line-height:1.15;margin:4px 0;color:var(--n)}
+.sp-art{color:var(--mu);font-size:1.05rem}
+.sp-seek{display:flex;align-items:center;gap:14px;margin:22px 0 16px;font-variant-numeric:tabular-nums;font-size:.95rem;font-weight:600;color:var(--mu)}
+.sp input[type=range]{-webkit-appearance:none;appearance:none;flex:1;height:10px;border-radius:99px;padding:0;border:0;margin:0;background:linear-gradient(to right,var(--ac) var(--p,0%),#e6e0d2 var(--p,0%));cursor:pointer;min-width:0}
+.sp input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:24px;height:24px;border-radius:50%;background:var(--ac);border:4px solid #fff;box-shadow:0 2px 8px rgba(20,33,61,.5)}
+.sp input[type=range]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;background:var(--ac);border:4px solid #fff;box-shadow:0 2px 8px rgba(20,33,61,.5)}
+.sp input[type=range]:focus-visible{outline:3px solid var(--ac);outline-offset:4px}
+.sp-ctrl{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.sp-b{width:52px;height:52px;border-radius:50%;border:2px solid var(--li);background:#fff;color:var(--n);display:grid;place-items:center;cursor:pointer;transition:.18s;padding:0}
+.sp-b:hover{border-color:var(--ac);color:var(--ac)}.sp-b svg{width:24px;height:24px;fill:currentColor}.sp-b:focus-visible,.sp-dl:focus-visible,.sp-list li:focus-visible{outline:3px solid var(--ac);outline-offset:3px}
+.sp-b.on{background:var(--so);border-color:var(--ac);color:var(--ad)}
+.sp-play{width:78px;height:78px;background:var(--ac);border-color:var(--ac);color:#fff;box-shadow:0 14px 30px -12px rgba(200,16,46,.9);position:relative}.sp-play:hover{background:var(--ad);border-color:var(--ad);color:#fff;transform:scale(1.06)}.sp-play svg{width:36px;height:36px}
+.sp.buf .sp-play::after{content:"";position:absolute;inset:-7px;border-radius:50%;border:4px solid transparent;border-top-color:var(--ac);animation:spspin .8s linear infinite}@keyframes spspin{to{transform:rotate(360deg)}}
+.sp-sm{width:46px;height:46px;font-size:.78rem;font-weight:700}
+.sp-spd{width:auto;padding:0 14px;border-radius:99px;font:700 .9rem 'Inter',Arial,sans-serif;height:46px}
+.sp-vol{display:flex;align-items:center;gap:8px;margin-left:auto;color:var(--n)}.sp-vol svg{width:24px;height:24px;fill:currentColor}.sp-vol input{width:110px;flex:none}
+.sp-dl{font-weight:700;font-size:.95rem;padding:12px 18px;border-radius:12px;border:2px solid var(--n);color:var(--n);text-decoration:none;background:#fff}.sp-dl:hover{background:var(--n);color:#fff}
+.sp-list{list-style:none;padding:0;margin:26px 0 0;border-top:1px solid var(--li)}
+.sp-list li{display:flex;align-items:center;gap:16px;padding:15px 12px;border-bottom:1px solid var(--li);cursor:pointer;border-radius:12px;transition:.15s}.sp-list li:hover{background:#f2eee4}.sp-list li.on{background:var(--so)}
+.sp-n{width:30px;text-align:center;font-family:'Lexend',Arial,sans-serif;font-weight:700;color:var(--mu)}.sp-list li.on .sp-n{color:var(--ac)}
+.sp-t{flex:1;font-weight:600;color:var(--n);min-width:0}.sp-t small{display:block;font-weight:400;color:var(--mu);font-size:.88rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sp-d{font-variant-numeric:tabular-nums;color:var(--mu);font-size:.92rem}
+.sp-msg{margin-top:18px;font-weight:600;color:var(--mu)}.sp-msg.err{color:var(--ad)}
+.sp-hint{margin-top:14px;font-size:.88rem;color:var(--mu)}.sp-hint kbd{font:600 .8rem 'Inter',Arial,sans-serif;background:#f2eee4;border:1px solid var(--li);border-radius:6px;padding:2px 7px}
+@media(max-width:820px){.sp{grid-template-columns:1fr;padding:22px}.sp-cover{max-width:220px}.sp-vol{margin-left:0;width:100%}.sp-vol input{flex:1;width:auto}.sp-hint{display:none}}
+@media(prefers-reduced-motion:reduce){.sp *{animation:none!important}}
 </style></head><body><div id="nav"></div><header class="page-head"><div class="wrap"><span class="pill">Muzyka</span><h1>Piosenki</h1><p>Posłuchaj piosenek z naszej kampanii.</p></div></header>
 <section><div class="wrap">
-  <div id="songGrid">
-    <div class="card song-card">
-      <h3>Ręce do pracy</h3>
-      <p>Oficjalny hymn kampanii.</p>
-      <audio controls preload="none" src="hymn-rece-do-pracy.mp3"></audio>
-      <a class="dl" href="hymn-rece-do-pracy.mp3" download>Pobierz</a>
-    </div>
-  </div>
-  <p id="songStatus" style="margin-top:18px;font-weight:600"></p>
+  <div class="sp" id="sp" aria-label="Odtwarzacz piosenek"></div>
+  <noscript><div class="card"><h3>Ręce do pracy</h3><p>Oficjalny hymn kampanii.</p><audio controls src="hymn-rece-do-pracy.mp3" style="width:100%"></audio></div></noscript>
+  <p class="sp-msg" id="songStatus" role="status"></p>
+  <p class="sp-hint">Skróty: <kbd>Spacja</kbd> odtwórz/pauza · <kbd>←</kbd> <kbd>→</kbd> przewiń o 5 s · <kbd>↑</kbd> <kbd>↓</kbd> głośność · <kbd>N</kbd> następna · <kbd>P</kbd> poprzednia</p>
 </div></section>
 <div id="foot"></div><script src="script.js"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script><script src="supabase-config.js"></script><script>
 (function(){
-  var grid = document.getElementById('songGrid'), status = document.getElementById('songStatus');
-  if(!(window.supabase && window.SB_URL)) return;
-  var sb = window.supabase.createClient(window.SB_URL, window.SB_KEY);
-  sb.from('songs').select('*').order('created_at', { ascending:false }).then(function(r){
-    if(r.error){ return; }   // brak tabeli / błąd sieci: zostaje sam hymn
-    (r.data || []).forEach(function(s){
-      var card = document.createElement('div'); card.className = 'card song-card';
-      var h = document.createElement('h3'); h.textContent = s.title; card.appendChild(h);
-      if(s.description){ var p = document.createElement('p'); p.textContent = s.description; card.appendChild(p); }
-      var a = document.createElement('audio'); a.controls = true; a.preload = 'none'; a.src = s.audio_url; card.appendChild(a);
-      var dl = document.createElement('a'); dl.className = 'dl'; dl.href = s.audio_url; dl.target = '_blank'; dl.rel = 'noopener'; dl.textContent = 'Pobierz'; card.appendChild(dl);
-      grid.appendChild(card);
-    });
+  var I={play:'<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>',pause:'<svg viewBox="0 0 24 24"><path d="M6 5h4v14H6zm8 0h4v14h-4z"/></svg>',prev:'<svg viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6 8.5 6V6z"/></svg>',next:'<svg viewBox="0 0 24 24"><path d="M16 6h2v12h-2zM6 18l8.5-6L6 6z"/></svg>',shuf:'<svg viewBox="0 0 24 24"><path d="M17 3l4 4-4 4V8h-2.6l-3.2 4.2L8.9 9H3V7h6.9l1.4 1.9L13.4 6H17V3zM3 15h5.9l2.3-3 1.5 2-2.7 3.5H3v-2.5zm14 6v-3h-3.6l-2.2-2.9 1.3-1.7L14.4 16H17v-3l4 4-4 4z"/></svg>',rep:'<svg viewBox="0 0 24 24"><path d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4z"/></svg>',vol:'<svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 4V5L7 9z"/><path d="M16 8.5a5 5 0 0 1 0 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>'};
+  var TR=[{src:'hymn-rece-do-pracy.mp3',title:'Ręce do pracy',artist:'Oficjalny hymn kampanii',dur:0,file:'Ręce do pracy - hymn kampanii.mp3'}];
+  var host=document.getElementById('sp'),status=document.getElementById('songStatus');
+  var a=new Audio(),i=0,shuffle=false,rep=0,speeds=[1,1.25,1.5,.75],si=0,drag=false;a.preload='metadata';
+  function fmt(t){t=Math.floor(t||0);if(!isFinite(t)||t<0)t=0;return Math.floor(t/60)+':'+String(t%60).padStart(2,'0')}
+  host.innerHTML='<div class="sp-cover"><img src="logo.png" alt=""><div class="sp-eq"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div><div class="sp-main"><span class="sp-k">Teraz gra</span><h2 class="sp-title"></h2><p class="sp-art"></p><div class="sp-seek"><span class="sp-cur">0:00</span><input class="sp-pos" type="range" min="0" max="1000" value="0" aria-label="Postęp utworu"><span class="sp-dur">0:00</span></div><div class="sp-ctrl"><button class="sp-b sp-shuf" aria-label="Losowa kolejność" title="Losowo">'+I.shuf+'</button><button class="sp-b sp-prev" aria-label="Poprzednia" title="Poprzednia (P)">'+I.prev+'</button><button class="sp-b sp-play" aria-label="Odtwórz" title="Odtwórz (spacja)">'+I.play+'</button><button class="sp-b sp-next" aria-label="Następna" title="Następna (N)">'+I.next+'</button><button class="sp-b sp-rep" aria-label="Powtarzanie" title="Powtarzaj">'+I.rep+'</button><button class="sp-b sp-spd" aria-label="Prędkość" title="Prędkość">1x</button><div class="sp-vol">'+I.vol+'<input class="sp-v" type="range" min="0" max="100" value="90" aria-label="Głośność"></div><a class="sp-dl" download>Pobierz</a></div><ol class="sp-list"></ol></div>';
+  var q=function(s){return host.querySelector(s)},pos=q('.sp-pos'),vv=q('.sp-v'),pb=q('.sp-play'),list=q('.sp-list');
+  function setP(el,v){el.style.setProperty('--p',v+'%')}
+  function drawList(){list.innerHTML=TR.map(function(t,n){return '<li tabindex="0" data-i="'+n+'" class="'+(n===i?'on':'')+'"><span class="sp-n">'+(n+1)+'</span><span class="sp-t">'+esc(t.title)+'<small>'+esc(t.artist||'')+'</small></span><span class="sp-d">'+(t.dur?fmt(t.dur):'–:–')+'</span></li>'}).join('');
+    list.querySelectorAll('li').forEach(function(li){li.onclick=function(){load(+li.dataset.i,true)};li.onkeydown=function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();load(+li.dataset.i,true)}}})}
+  function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+  function probe(t){var p=new Audio();p.preload='metadata';p.onloadedmetadata=function(){t.dur=p.duration;if(t===TR[i])q('.sp-dur').textContent=fmt(t.dur);drawList()};p.src=t.src}
+  function load(n,go){i=(n+TR.length)%TR.length;var t=TR[i];a.src=t.src;q('.sp-title').textContent=t.title;q('.sp-art').textContent=t.artist||'';q('.sp-cur').textContent='0:00';q('.sp-dur').textContent=t.dur?fmt(t.dur):'0:00';pos.value=0;setP(pos,0);var dl=q('.sp-dl');dl.href=t.src;dl.setAttribute('download',t.file||t.title);drawList();a.playbackRate=speeds[si];
+    if('mediaSession' in navigator){navigator.mediaSession.metadata=new MediaMetadata({title:t.title,artist:t.artist||'Mateusz Talar'})}
+    if(go)a.play().catch(function(){})}
+  function nextIndex(){if(shuffle&&TR.length>1){var n;do{n=Math.floor(Math.random()*TR.length)}while(n===i);return n}return i+1}
+  pb.onclick=function(){a.paused?a.play().catch(function(){}):a.pause()};
+  q('.sp-prev').onclick=function(){a.currentTime>3?a.currentTime=0:load(i-1,!a.paused)};q('.sp-next').onclick=function(){load(nextIndex(),!a.paused)};
+  q('.sp-shuf').onclick=function(e){shuffle=!shuffle;e.currentTarget.classList.toggle('on',shuffle)};
+  q('.sp-rep').onclick=function(e){rep=(rep+1)%3;var b=e.currentTarget;b.classList.toggle('on',rep>0);b.title=['Powtarzanie wyłączone','Powtarzaj wszystkie','Powtarzaj jeden utwór'][rep];b.setAttribute('aria-label',b.title);b.style.opacity=1;if(rep===2)b.innerHTML=I.rep.replace('</svg>','<text x="12" y="15.5" font-size="8" font-weight="700" text-anchor="middle" fill="#fff" stroke="none">1</text></svg>')+'';else b.innerHTML=I.rep};
+  q('.sp-spd').onclick=function(e){si=(si+1)%speeds.length;a.playbackRate=speeds[si];e.currentTarget.textContent=speeds[si]+'x'};
+  a.addEventListener('play',function(){host.classList.add('go');pb.innerHTML=I.pause;pb.setAttribute('aria-label','Pauza');if(window.__spOther)window.__spOther(a)});
+  a.addEventListener('pause',function(){host.classList.remove('go');pb.innerHTML=I.play;pb.setAttribute('aria-label','Odtwórz')});
+  a.addEventListener('waiting',function(){host.classList.add('buf')});a.addEventListener('playing',function(){host.classList.remove('buf')});a.addEventListener('canplay',function(){host.classList.remove('buf')});
+  a.addEventListener('timeupdate',function(){var d=a.duration||TR[i].dur||1,p=a.currentTime/d*100;if(!drag){pos.value=p*10;setP(pos,p)}q('.sp-cur').textContent=fmt(a.currentTime)});
+  a.addEventListener('loadedmetadata',function(){TR[i].dur=a.duration;q('.sp-dur').textContent=fmt(a.duration);drawList()});
+  a.addEventListener('ended',function(){if(rep===2){a.currentTime=0;a.play();return}if(i<TR.length-1||rep===1||shuffle){load(nextIndex(),true)}else{a.currentTime=0}});
+  a.addEventListener('error',function(){status.className='sp-msg err';status.textContent='Nie udało się wczytać utworu „'+TR[i].title+'”. Sprawdź, czy plik jest na stronie.';host.classList.remove('buf')});
+  a.addEventListener('loadstart',function(){if(status.classList.contains('err')){status.className='sp-msg';status.textContent=''}});
+  pos.addEventListener('input',function(){drag=true;var d=a.duration||TR[i].dur||0;a.currentTime=pos.value/1000*d;setP(pos,pos.value/10);q('.sp-cur').textContent=fmt(a.currentTime)});pos.addEventListener('change',function(){drag=false});
+  var v0=90;try{var sv=localStorage.getItem('sp-vol');if(sv!==null&&sv!=='')v0=+sv}catch(e){}vv.value=v0;a.volume=v0/100;setP(vv,v0);
+  vv.addEventListener('input',function(){a.volume=vv.value/100;setP(vv,vv.value);try{localStorage.setItem('sp-vol',vv.value)}catch(e){}});
+  document.addEventListener('keydown',function(e){var t=e.target&&e.target.tagName;if(t==='INPUT'&&e.target.type!=='range'||t==='TEXTAREA'||t==='SELECT'||e.ctrlKey||e.metaKey||e.altKey)return;
+    if(e.key===' '&&t!=='BUTTON'&&t!=='A'&&t!=='LI'){e.preventDefault();pb.click()}
+    else if(e.key==='ArrowRight'&&t!=='INPUT'){a.currentTime=Math.min((a.duration||1e9),a.currentTime+5)}
+    else if(e.key==='ArrowLeft'&&t!=='INPUT'){a.currentTime=Math.max(0,a.currentTime-5)}
+    else if(e.key==='ArrowUp'&&t!=='INPUT'){e.preventDefault();vv.value=Math.min(100,+vv.value+5);vv.dispatchEvent(new Event('input'))}
+    else if(e.key==='ArrowDown'&&t!=='INPUT'){e.preventDefault();vv.value=Math.max(0,+vv.value-5);vv.dispatchEvent(new Event('input'))}
+    else if(e.key==='n'||e.key==='N')q('.sp-next').click();else if(e.key==='p'||e.key==='P')q('.sp-prev').click()});
+  if('mediaSession' in navigator){var ms=navigator.mediaSession;ms.setActionHandler('play',function(){a.play()});ms.setActionHandler('pause',function(){a.pause()});ms.setActionHandler('previoustrack',function(){load(i-1,true)});ms.setActionHandler('nexttrack',function(){load(nextIndex(),true)});try{ms.setActionHandler('seekto',function(d){a.currentTime=d.seekTime})}catch(e){}}
+  /* API dla kolejnych utworów (np. z bazy) */
+  window.SP={add:function(arr){arr.forEach(function(s){var t={src:s.src,title:s.title||'Bez tytułu',artist:s.artist||'',dur:0,file:(s.title||'piosenka')+'.mp3'};TR.push(t);probe(t)});drawList()}};
+  load(0,false);probe(TR[0]);
+  /* utwory z bazy Supabase (jak wcześniej); brak bazy lub błąd = zostaje sam hymn */
+  if(!(window.supabase&&window.SB_URL))return;
+  var sb=window.supabase.createClient(window.SB_URL,window.SB_KEY);
+  sb.from('songs').select('*').order('created_at',{ascending:false}).then(function(r){
+    if(r.error){return}
+    window.SP.add((r.data||[]).map(function(s){return{src:s.audio_url,title:s.title,artist:s.description||'Piosenka kampanii'}}));
   });
 })();
 </script></body></html>
