@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>JS: obiekty i DOM. Nauka na sprawdzian</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#f2f6fc;--grid:#dce5f2;--ink:#1b2540;--mute:#5d6a85;--hl:#ffe45e;--blue:#3556e8;--panel:#fffffff0;--win:#1a2030;--out:#0b3b36;--outt:#7ff5e4}
+@media(prefers-color-scheme:dark){:root{--paper:#12172a;--grid:#1d2540;--ink:#e8ecf8;--mute:#98a3c0;--hl:#7a6a00;--blue:#7d92ff;--panel:#1b2340f0;--out:#0a2f2b}}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:70px}
+body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.65 system-ui,-apple-system,"Segoe UI",sans-serif;
+background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:26px 26px}
+main{max-width:780px;margin:0 auto;padding:0 16px 80px}
+header{padding:40px 0 18px}
+h1,h2,h3{font-family:"Bricolage Grotesque",system-ui,sans-serif;line-height:1.15;margin:0}
+h1{font-size:clamp(2.2rem,8vw,3.4rem);font-weight:800}
+h2{font-size:1.9rem;font-weight:800;margin:56px 0 6px}
+h3{font-size:1.2rem;font-weight:600;margin:0 0 6px}
+.mk{background:linear-gradient(transparent 58%,var(--hl) 58%);padding:0 4px}
+.sub{color:var(--mute);max-width:56ch;margin:12px 0 0}
+nav{position:sticky;top:0;z-index:5;display:flex;gap:8px;overflow-x:auto;padding:10px 16px;margin:0 -16px;background:var(--paper);border-bottom:2px solid var(--ink)}
+nav a{flex:none;color:var(--ink);text-decoration:none;font-weight:600;padding:4px 14px;border:2px solid var(--ink);border-radius:99px;background:var(--panel)}
+nav a:hover{background:var(--hl)}
+.l{margin:30px 0}
+.n{color:var(--mute);margin:0 0 10px;font-size:.95rem}
+.win{background:var(--win);border-radius:12px;overflow:hidden;border:2px solid var(--ink)}
+.bar{display:flex;justify-content:space-between;align-items:center;padding:5px 10px 5px 14px;background:#252d42;color:#98a3c0;font:600 .78rem "JetBrains Mono",monospace}
+.bar button{font:600 .78rem system-ui;padding:2px 10px;box-shadow:none;border-radius:6px;background:#3a4565;color:#fff;border:0}
+pre{margin:0;padding:12px 14px;overflow-x:auto;color:#e4e9f7;font:400 .86rem/1.55 "JetBrains Mono",ui-monospace,Consolas,monospace}
+.k{color:#ff8fab}.s{color:#9be28a}.c{color:#7d89a8}.d{color:#ffd166}.f{color:#7cc4ff}
+.try{margin-top:12px;padding:12px;background:var(--panel);border:2px solid var(--ink);border-radius:12px;box-shadow:5px 5px 0 var(--ink)}
+.area{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.area>.w{flex-basis:100%}
+button{font:600 1rem system-ui,sans-serif;padding:7px 14px;border-radius:9px;border:2px solid var(--ink);background:var(--blue);color:#fff;cursor:pointer;box-shadow:3px 3px 0 var(--ink);transition:transform .08s,box-shadow .08s}
+@media(prefers-color-scheme:dark){button{color:#0c1220}.bar button{color:#fff}}
+button:active{transform:translate(3px,3px);box-shadow:0 0 0 var(--ink)}
+button:focus-visible,input:focus-visible{outline:3px solid #f0a400;outline-offset:2px}
+input{font:inherit;padding:6px 10px;border-radius:9px;border:2px solid var(--ink);background:var(--paper);color:var(--ink)}
+.out{background:var(--out);color:var(--outt);font:400 .86rem/1.55 "JetBrains Mono",ui-monospace,monospace;padding:8px 12px;border-radius:9px;margin-top:10px}
+.out:empty{display:none}.out div::before{content:"› ";opacity:.6}
+.box{padding:10px 14px;border:2px dashed var(--mute);border-radius:9px}
+.on{background:#3556e8;color:#fff;border-color:#3556e8}
+.o1{padding:14px;background:#3556e833;border-radius:9px}.o2{padding:6px 14px;background:#ffd16688;border-radius:6px;display:inline-block;margin-left:6px}
+ul.d1{margin:2px 0;padding-left:1.2rem}.klik li{cursor:pointer}
+.tree,.tree ul{list-style:none;margin:0;padding-left:20px;border-left:2px solid var(--mute)}
+.tree{border:0;padding:0}.tree li{margin:6px 0}
+.tree button{padding:2px 10px;font:600 .85rem "JetBrains Mono",monospace;box-shadow:2px 2px 0 var(--ink)}
+.tree [data-t=element]{background:#12a594;color:#fff}.tree [data-t=attr]{background:#e8365d;color:#fff}.tree [data-t=text]{background:#ffd166;color:#1b2540}
+.tree .sel{outline:3px solid #f0a400}
+#opis{margin-top:10px;font-weight:600}
+.terms{display:grid;gap:6px;margin:12px 0;padding:0;list-style:none}
+.terms li{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+.terms code{background:var(--hl);padding:1px 8px;border-radius:6px;font:600 .88rem "JetBrains Mono",monospace;color:var(--ink)}
+.src{margin-top:10px;font-size:.88rem;color:var(--mute)}.src a{color:var(--blue)}
+</style>
+</head>
+<body>
+<main>
+<header>
+  <h1><span class="mk">JS: obiekty i DOM</span></h1>
+  <p class="sub">Każda lekcja ma kod i działający przykład. Kliknij przyciski i zobacz, co robi kod. Do kodu możesz użyć przycisku Kopiuj.</p>
+</header>
+<nav><a href="#obiekty">Obiekty</a><a href="#dom">DOM</a><a href="#zdarzenia">Zdarzenia</a><a href="#pulapki">Pułapki</a></nav>
+
+<div id="root"></div>
+
+<div id="intro" hidden>
+  <p>DOM (Document Object Model) to obiektowy model strony HTML. Gdy strona się ładuje, przeglądarka buduje z niej <strong>drzewo węzłów</strong>, a JavaScript może po tym drzewie chodzić i je zmieniać. Kliknij węzeł, żeby zobaczyć, jakiego jest rodzaju:</p>
+  <div class="try">
+    <ul class="tree" id="tree">
+      <li><button data-t="document">document</button>
+        <ul><li><button data-t="element">&lt;html&gt;</button>
+          <ul><li><button data-t="element">&lt;head&gt;</button></li>
+            <li><button data-t="element">&lt;body&gt;</button>
+              <ul><li><button data-t="element">&lt;h1&gt;</button><ul><li><button data-t="text">„Mój nagłówek”</button></li></ul></li>
+                <li><button data-t="element">&lt;a&gt;</button><ul><li><button data-t="attr">href</button></li></ul></li></ul></li></ul></li></ul></li>
+    </ul>
+    <div id="opis">Kliknij dowolny węzeł.</div>
+  </div>
+  <p class="src">DOM jest standardem W3C i WHATWG, niezależnym od języka programowania. Na podstawie: <a href="https://www.w3schools.com/js/js_htmldom.asp">W3Schools, JavaScript HTML DOM</a>.</p>
+</div>
+</main>
+
+<script>
+const demos=[
+{sec:"Obiekty",id:"obiekty"},
+{t:"Odczyt, dodawanie i usuwanie właściwości",n:"Kropka lub nawiasy. Nawiasy są potrzebne, gdy nazwa klucza jest w zmiennej.",
+run(log){
+  const osoba = { imie: "Ola", wiek: 16 };
+  log(osoba.imie);
+  const klucz = "wiek";
+  log(osoba[klucz]);
+  osoba.miasto = "Kraków";
+  delete osoba.wiek;
+  log(JSON.stringify(osoba));
+  log("imie" in osoba);
+}},
+{t:"Object.keys, values, entries",
+run(log){
+  const o = { a: 1, b: 2, c: 3 };
+  log(Object.keys(o));
+  log(Object.values(o));
+  for (const [klucz, wartosc] of Object.entries(o)) {
+    log(klucz + " = " + wartosc);
+  }
+}},
+{t:"Referencja a kopia",n:"b = a nie kopiuje. Kopię robi spread, a głęboką structuredClone.",
+run(log){
+  const a = { x: 1 };
+  const b = a;
+  b.x = 99;
+  log("a.x = " + a.x + " (ta sama referencja)");
+  const c = { ...a };
+  c.x = 5;
+  log("a.x = " + a.x + " (c to kopia)");
+  log(JSON.stringify(structuredClone({ w: { z: 1 } })));
+}},
+{t:"Destrukturyzacja i spread",
+run(log){
+  const osoba = { imie: "Ola", wiek: 16 };
+  const { imie, miasto = "brak" } = osoba;
+  log(imie + ", " + miasto);
+  log(JSON.stringify({ ...osoba, wiek: 17 }));
+}},
+{t:"this w metodzie i w funkcji strzałkowej",n:"W strzałkowej this nie wskazuje na obiekt, więc nie rób z niej metody.",
+run(log){
+  const osoba = {
+    imie: "Ola",
+    zwykla() { return "Cześć, " + this.imie; },
+    strzalka: () => "Cześć, " + this.imie
+  };
+  log(osoba.zwykla());
+  log(osoba.strzalka());
+}},
+{t:"JSON: obiekt na tekst i z powrotem",
+run(log){
+  const tekst = JSON.stringify({ imie: "Ola", wiek: 16 });
+  log(tekst + " (" + typeof tekst + ")");
+  const z = JSON.parse(tekst);
+  log(z.imie + " (" + typeof z + ")");
+}},
+{t:"Klasy i dziedziczenie",
+run(log){
+  class Zwierze {
+    constructor(nazwa) { this.nazwa = nazwa; }
+    glos() { return "..."; }
+  }
+  class Pies extends Zwierze {
+    glos() { return "Hau!"; }
+  }
+  log(new Zwierze("Stwór").glos());
+  const p = new Pies("Burek");
+  log(p.nazwa + ": " + p.glos());
+  log(p instanceof Zwierze);
+}},
+
+{sec:"DOM",id:"dom",after:"intro"},
+{t:"Dostęp do elementu",n:"id to atrybut HTML, getElementById() to metoda DOM, a innerHTML to właściwość DOM.",auto:1,
+html:'<p id="demo" class="w">Tu będzie tekst</p><button id="a1">Zmień tekst</button>',
+run(log){
+  const akapit = document.getElementById("demo");
+  document.getElementById("a1").addEventListener("click", () => {
+    akapit.innerHTML = "Witaj, świecie!";
+  });
+}},
+{t:"Wybieranie elementów",n:"querySelectorAll zwraca NodeList. Ma forEach, ale nie ma map ani filter.",auto:1,
+html:'<button id="w1">getElementById</button><button id="w2">querySelector</button><button id="w3">querySelectorAll</button><p id="pierwszy" class="p w">Pierwszy</p><p class="p w">Drugi</p><p class="p w">Trzeci</p>',
+run(log){
+  const akapity = document.querySelectorAll(".p");
+  const reset = () => akapity.forEach(el => el.style.background = "");
+  document.getElementById("w1").addEventListener("click", () => {
+    reset();
+    document.getElementById("pierwszy").style.background = "gold";
+  });
+  document.getElementById("w2").addEventListener("click", () => {
+    reset();
+    document.querySelector(".p").style.background = "gold";
+  });
+  document.getElementById("w3").addEventListener("click", () => {
+    reset();
+    akapity.forEach(el => el.style.background = "gold");
+  });
+}},
+{t:"textContent kontra innerHTML",n:"textContent wstawia czysty tekst. innerHTML czyta znaczniki, co przy danych od użytkownika grozi XSS.",auto:1,
+html:'<button id="t1">textContent</button><button id="t2">innerHTML</button><p id="cel" class="w">Tu pojawi się tekst</p>',
+run(log){
+  const cel = document.getElementById("cel");
+  document.getElementById("t1").addEventListener("click", () => {
+    cel.textContent = "<b>pogrubione</b>";
+  });
+  document.getElementById("t2").addEventListener("click", () => {
+    cel.innerHTML = "<b>pogrubione</b>";
+  });
+}},
+{t:"style i classList",auto:1,
+html:'<button id="s1">style</button><button id="s2">classList.toggle</button><button id="s3">classList.contains</button><div id="pud" class="box w">Zmieniam wygląd tego pudełka</div>',
+run(log){
+  const pudelko = document.getElementById("pud");
+  document.getElementById("s1").addEventListener("click", () => {
+    pudelko.style.background = "gold";
+    pudelko.style.color = "#1b2540";
+  });
+  document.getElementById("s2").addEventListener("click", () => {
+    pudelko.classList.toggle("on");
+  });
+  document.getElementById("s3").addEventListener("click", () => {
+    log("Ma klasę on? " + pudelko.classList.contains("on"));
+  });
+}},
+{t:"Tworzenie i usuwanie elementów",auto:1,
+html:'<button id="c1">Dodaj</button><button id="c2">Usuń ostatni</button><ul id="lista" class="d1 w"></ul>',
+run(log){
+  const lista = document.getElementById("lista");
+  let n = 0;
+  document.getElementById("c1").addEventListener("click", () => {
+    const li = document.createElement("li");
+    li.textContent = "Element " + (++n);
+    lista.appendChild(li);
+  });
+  document.getElementById("c2").addEventListener("click", () => {
+    const ostatni = lista.lastElementChild;
+    if (ostatni) ostatni.remove();
+  });
+}},
+{t:"Nawigacja po drzewie",n:"Punkt startowy to element „Środek”.",auto:1,
+html:'<button id="v1">parentElement</button><button id="v2">nextElementSibling</button><button id="v3">previousElementSibling</button><ul id="nav" class="d1 w"><li>Góra</li><li id="srodek">Środek</li><li>Dół</li></ul>',
+run(log){
+  const srodek = document.getElementById("srodek");
+  document.getElementById("v1").addEventListener("click", () => {
+    log("parentElement: <" + srodek.parentElement.tagName.toLowerCase() + ">");
+  });
+  document.getElementById("v2").addEventListener("click", () => {
+    log("nextElementSibling: " + srodek.nextElementSibling.textContent);
+  });
+  document.getElementById("v3").addEventListener("click", () => {
+    log("previousElementSibling: " + srodek.previousElementSibling.textContent);
+  });
+}},
+
+{sec:"Zdarzenia",id:"zdarzenia"},
+{t:"click i obiekt zdarzenia",auto:1,
+html:'<button id="z1">Kliknij mnie</button>',
+run(log){
+  let ile = 0;
+  document.getElementById("z1").addEventListener("click", (e) => {
+    ile++;
+    log("Kliknięcie nr " + ile + ", e.type = " + e.type + ", e.target = <" + e.target.tagName.toLowerCase() + ">");
+  });
+}},
+{t:"input i keydown",auto:1,
+html:'<input id="z2" placeholder="Pisz tutaj">',
+run(log){
+  const pole = document.getElementById("z2");
+  pole.addEventListener("input", () => {
+    log("input: wpisano znaków " + pole.value.length);
+  });
+  pole.addEventListener("keydown", (e) => {
+    log("keydown: " + e.key);
+  });
+}},
+{t:"submit i preventDefault",n:"Bez preventDefault formularz przeładowałby stronę.",auto:1,
+html:'<form id="z3" class="area"><input id="im" placeholder="Twoje imię"><button type="submit">Wyślij</button></form>',
+run(log){
+  document.getElementById("z3").addEventListener("submit", (e) => {
+    e.preventDefault();
+    log("Wysłano bez przeładowania. Imię: " + document.getElementById("im").value);
+  });
+}},
+{t:"Bubbling",n:"Kliknij żółte pole: zdarzenie obsłuży najpierw dziecko, potem rodzic.",auto:1,
+html:'<div id="o1" class="o1 w">rodzic <span id="o2" class="o2">dziecko</span></div>',
+run(log){
+  document.getElementById("o2").addEventListener("click", () => {
+    log("1. dziecko");
+  });
+  document.getElementById("o1").addEventListener("click", () => {
+    log("2. rodzic (zdarzenie wyszło w górę)");
+  });
+}},
+{t:"Delegacja zdarzeń",n:"Jeden listener na liście obsługuje też elementy dodane później. Dodaj element i kliknij w niego.",auto:1,
+html:'<button id="g1">Dodaj element</button><ul id="g2" class="d1 klik w"><li>Element 1</li><li>Element 2</li></ul>',
+run(log){
+  const lista = document.getElementById("g2");
+  let n = 2;
+  lista.addEventListener("click", (e) => {
+    if (e.target.matches("li")) {
+      log("Kliknięto: " + e.target.textContent);
+    }
+  });
+  document.getElementById("g1").addEventListener("click", () => {
+    const li = document.createElement("li");
+    li.textContent = "Element " + (++n);
+    lista.appendChild(li);
+  });
+}},
+
+{sec:"Pułapki na sprawdzianie",id:"pulapki"},
+{t:"== kontra ===",
+run(log){
+  log("0 == '0'   -> " + (0 == "0"));
+  log("0 === '0'  -> " + (0 === "0"));
+  log("null == undefined  -> " + (null == undefined));
+  log("null === undefined -> " + (null === undefined));
+}},
+{t:"const nie blokuje zmiany pól obiektu",n:"const blokuje tylko ponowne przypisanie zmiennej. Zmianę pól zablokuje dopiero Object.freeze.",
+run(log){
+  const o = { a: 1 };
+  o.a = 2;
+  log("Pole zmienione: a = " + o.a);
+  try {
+    o = { a: 3 };
+  } catch (err) {
+    log("Przypisanie na nowo: " + err.name);
+  }
+  const z = Object.freeze({ b: 1 });
+  z.b = 2;
+  log("Zamrożony: b = " + z.b);
+}}
+];
+
+const root=document.getElementById("root");
+function src(fn){
+  const s=fn.toString(),l=s.slice(s.indexOf("{")+1,s.lastIndexOf("}")).split("\n");
+  while(l.length&&!l[0].trim())l.shift();
+  while(l.length&&!l[l.length-1].trim())l.pop();
+  const w=Math.min(...l.filter(x=>x.trim()).map(x=>x.match(/^ */)[0].length));
+  return l.map(x=>x.slice(w)).join("\n");
+}
+function hl(code){
+  const e=code.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  return e.replace(/(\/\/.*$)|("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')|\b(const|let|function|return|if|else|for|of|in|new|class|extends|constructor|try|catch|delete|true|false|null|undefined|this)\b|\b(\d+)\b|\b([A-Za-z_]\w*)(?=\()/gm,
+    (m,c,s,k,d,f)=>'<span class="'+(c?"c":s?"s":k?"k":d?"d":"f")+'">'+m+'</span>');
+}
+demos.forEach(d=>{
+  if(d.sec){
+    const h=document.createElement("h2");h.id=d.id;
+    h.innerHTML='<span class="mk"></span>';h.firstChild.textContent=d.sec;
+    root.appendChild(h);
+    if(d.after){const x=document.getElementById(d.after);x.hidden=false;root.appendChild(x);}
+    return;
+  }
+  const code=src(d.run),sec=document.createElement("section");
+  sec.className="l";
+  sec.innerHTML='<h3></h3><p class="n"></p><div class="win"><div class="bar"><span>javascript</span><button type="button">Kopiuj</button></div><pre></pre></div><div class="try"><div class="area"></div><div class="out"></div></div>';
+  sec.querySelector("h3").textContent=d.t;
+  const n=sec.querySelector(".n");d.n?n.textContent=d.n:n.remove();
+  sec.querySelector("pre").innerHTML=hl(code);
+  const cp=sec.querySelector(".bar button");
+  cp.addEventListener("click",()=>{
+    try{navigator.clipboard.writeText(code);cp.textContent="Skopiowano";}catch(e){cp.textContent="Zaznacz ręcznie";}
+    setTimeout(()=>cp.textContent="Kopiuj",1500);
+  });
+  const area=sec.querySelector(".area"),out=sec.querySelector(".out");
+  const log=t=>{const x=document.createElement("div");x.textContent=t;out.appendChild(x);};
+  root.appendChild(sec);
+  if(d.auto){area.innerHTML=d.html;d.run(log);}
+  else{
+    const b=document.createElement("button");b.textContent="Uruchom ▶";
+    b.addEventListener("click",()=>{out.textContent="";d.run(log);});
+    area.appendChild(b);
+  }
+});
+
+const opisy={document:"Węzeł dokumentu: właściciel wszystkich pozostałych węzłów.",element:"Węzeł elementu: każdy znacznik HTML, np. html, head, body, h1, a.",attr:"Węzeł atrybutu: np. href, należy do elementu.",text:"Węzeł tekstowy: sam tekst wewnątrz elementu."};
+document.getElementById("tree").addEventListener("click",e=>{
+  const b=e.target.closest("button");if(!b)return;
+  document.querySelectorAll("#tree .sel").forEach(x=>x.classList.remove("sel"));
+  b.classList.add("sel");
+  document.getElementById("opis").textContent=opisy[b.dataset.t]||"";
+});
+</script>
+</body>
+</html>
