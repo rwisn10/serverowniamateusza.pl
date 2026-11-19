@@ -62,6 +62,7 @@ mjx-container[display="true"]{overflow-x:auto;overflow-y:hidden;max-width:100%;m
 <p class="sm">Wybierz sprawdzian, żeby zobaczyć pełne rozwiązania krok po kroku, ze wzorami w oznaczeniach CKE.</p>
 <div class="cards">
 <button class="card on" data-open="magnetyzm"><h2>🧲 Magnetyzm</h2><p>Siła Lorentza, siła elektrodynamiczna, cyklotron, pole przewodników.</p><span class="tag">Dostępny</span><span class="tag">pytania 1–5</span><span class="tag">zad. 6–8</span><span class="tag">22 p.</span></button>
+<button class="card on" data-open="prad"><h2>⚡ Prąd przemienny</h2><p>Napięcie skuteczne, częstotliwość, moc średnia i praca opornika.</p><span class="tag">Dostępny</span><span class="tag">1 zadanie</span></button>
 <div class="card off"><h2>Kolejne sprawdziany</h2><p>Następne sprawdziany pojawią się w przyszłości. Zajrzyj tu później.</p><span class="tag soon">Wkrótce</span></div>
 </div>
 <p class="foot">Dodam tu kolejne tematy, gdy będą gotowe.</p>
@@ -192,11 +193,73 @@ mjx-container[display="true"]{overflow-x:auto;overflow-y:hidden;max-width:100%;m
 
 </main>
 </div>
+<div class="view" id="view-prad" hidden>
+<div class="backwrap"><button class="back" data-open="home">← Wszystkie sprawdziany</button></div>
+<header>
+<h1>⚡ Prąd przemienny – rozwiązanie kartkówki</h1>
+<p>Opór 15 Ω dołączony do źródła napięcia przemiennego, wykres I(t).</p>
+</header>
+<nav><div><a href="#pp-sum">Odpowiedzi</a><a href="#pp-wzory">Wzory</a><a href="#pp-dane">Dane</a><a href="#pp-f">f</a><a href="#pp-u">U<sub>sk</sub></a><a href="#pp-p">P</a><a href="#pp-w">W</a></div></nav>
+<main>
+
+<section id="pp-sum"><h2>Szybkie odpowiedzi</h2>
+<table>
+<tr><th>Szukane</th><th>Wynik</th><th>Krótko</th></tr>
+<tr><td>Częstotliwość</td><td class="a">10 Hz</td><td>okres z wykresu T = 0,1 s</td></tr>
+<tr><td>Napięcie skuteczne</td><td class="a">≈ 53 V</td><td>U₀ = 75 V, dzielimy przez √2</td></tr>
+<tr><td>Moc średnia</td><td class="a">187,5 W</td><td>P = I<sub>sk</sub>²·R</td></tr>
+<tr><td>Praca w 5 min</td><td class="a">56 250 J</td><td>W = P·t, t = 300 s</td></tr>
+</table></section>
+
+<section id="pp-wzory"><h2>Wzory użyte w zadaniu</h2>
+<div class="form"><b>Częstotliwość i okres</b>\[f=\frac{1}{T}\]</div>
+<div class="form"><b>Prawo Ohma (wartości maksymalne)</b>\[U_{max}=I_{max}\,R\]</div>
+<div class="form"><b>Wartości skuteczne</b>\[I_{sk}=\frac{I_{max}}{\sqrt2},\qquad U_{sk}=\frac{U_{max}}{\sqrt2}\]</div>
+<div class="form"><b>Moc średnia i praca</b>\[P=U_{sk}\,I_{sk}=I_{sk}^2\,R,\qquad W=P\,t\]</div>
+<div class="note">Oznaczenia przepisałem z pamięci, więc zerknij na swoją kartę wzorów i sprawdź, czy się zgadzają (np. \(I_0\) zamiast \(I_{max}\)).</div>
+</section>
+
+<section id="pp-dane"><h2>Dane i odczyt z wykresu</h2>
+<p>\(R=15\ \Omega,\quad I_{max}=5\ \mathrm A,\quad t=5\ \mathrm{min}=300\ \mathrm s\)</p>
+<ol class="steps">
+<li><b>Amplituda:</b> szczyt sinusoidy sięga 5 A, więc \(I_{max}=5\ \mathrm A\).</li>
+<li><b>Okres:</b> pełna sinusoida zaczyna się w 0 i kończy w \(0{,}1\ \mathrm s\). Na osi widać dwie takie fale do \(0{,}2\ \mathrm s\), więc \(T=0{,}1\ \mathrm s\).</li>
+</ol></section>
+
+<section id="pp-f"><h2>Częstotliwość</h2>
+<div class="form"><b>Wzór</b>\[f=\frac{1}{T}\]</div>
+\[f=\frac{1}{0{,}1\ \mathrm s}=10\ \mathrm{Hz}\]
+<div class="ans">f = 10 Hz</div></section>
+
+<section id="pp-u"><h2>Napięcie skuteczne</h2>
+<ol class="steps">
+<li><b>Amplituda napięcia</b> z prawa Ohma:
+\[U_{max}=I_{max}R=5\cdot15=75\ \mathrm V\]</li>
+<li><b>Napięcie skuteczne:</b>
+\[U_{sk}=\frac{U_{max}}{\sqrt2}=\frac{75}{\sqrt2}\approx 53\ \mathrm V\]</li>
+</ol>
+<div class="ans">U<sub>sk</sub> ≈ 53 V</div>
+<p class="sm">Przy okazji natężenie skuteczne: \(I_{sk}=\dfrac{5}{\sqrt2}\approx3{,}54\ \mathrm A\).</p></section>
+
+<section id="pp-p"><h2>Średnia moc</h2>
+<div class="form"><b>Wzór</b>\[P=I_{sk}^2\,R\]</div>
+\[P=\left(\frac{5}{\sqrt2}\right)^2\cdot15=12{,}5\cdot15=187{,}5\ \mathrm W\]
+<div class="ans">P = 187,5 W</div>
+<p class="sm">Sprawdzenie: \(U_{sk}I_{sk}\approx53\cdot3{,}54\approx187{,}5\ \mathrm W\).</p></section>
+
+<section id="pp-w"><h2>Praca w ciągu 5 min</h2>
+<div class="form"><b>Wzór</b>\[W=P\,t\]</div>
+\[W=187{,}5\ \mathrm W\cdot300\ \mathrm s=56\,250\ \mathrm J\approx56{,}3\ \mathrm{kJ}\]
+<div class="ans">W = 56 250 J</div>
+<div class="note">Pamiętaj o zamianie minut na sekundy: 5 min = 300 s. Bez tego wynik w dżulach będzie błędny.</div></section>
+
+</main>
+</div>
 <script>
-function show(v){document.getElementById("view-home").hidden=v!=="home";document.getElementById("view-magnetyzm").hidden=v!=="magnetyzm";window.scrollTo(0,0);}
+function show(v){document.querySelectorAll(".view").forEach(function(d){d.hidden=d.id!=="view-"+v;});window.scrollTo(0,0);}
 document.querySelectorAll("[data-open]").forEach(function(b){b.addEventListener("click",function(){show(b.getAttribute("data-open"));});});
 document.querySelectorAll("nav a").forEach(function(a){a.addEventListener("click",function(e){e.preventDefault();var t=document.getElementById(a.getAttribute("href").slice(1));if(t)t.scrollIntoView({behavior:"smooth"});});});
-if(location.hash==="#magnetyzm")show("magnetyzm");
+if(location.hash==="#magnetyzm")show("magnetyzm");if(location.hash==="#prad")show("prad");
 </script>
 </body>
 </html>
